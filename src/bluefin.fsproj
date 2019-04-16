@@ -14,6 +14,9 @@
     <Compile Include="Cosmos.fs" />
     <Compile Include="Servicebus.fs" />
     <Compile Include="Group.fs" />
+    <Compile Include="network/ApplicationGateway.fs" />
+    <Compile Include="network/VNet.fs" />
+    <Compile Include="network/PublicIp.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
