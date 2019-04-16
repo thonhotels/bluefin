@@ -14,7 +14,7 @@ module Core =
 
     let defaultOptions = { DisplayName = ""; WorkingDirectory = ""; RedactTrace = id }
 
-    let private execProcess name arguments createOptions =
+    let private execProcess name arguments createOptions resultFn =
 
           let arguments = // Split a command on whitespace, ignoring quoted sections
             let regex = Regex(@"[ ](?=(?:[^""]*""[^""]*"")*[^""]*$)", RegexOptions.Multiline)
@@ -39,24 +39,31 @@ module Core =
                           Trace.tracefn "%s> \"%s\" %s \n" options.WorkingDirectory cli (joinArgs >> options.RedactTrace <| arguments)
               )
               |> Proc.run
-              |> fun res -> 
-                        if res.ExitCode <> 0 then failwithf "Step failed: %O" res.Result.Error
-                        res.Result.Output.Trim().Trim('"')     
+              |> resultFn 
             
           with ex ->
               failwithf "Error calling %s %s  dir: %s \n %O" name (joinArgs >> options.RedactTrace <| arguments) options.WorkingDirectory ex      
 
+    let private execProcessString name arguments createOptions =
+        execProcess name arguments createOptions (fun res -> 
+                        if res.ExitCode <> 0 then failwithf "Step failed: %O" res.Result.Error
+                        res.Result.Output.Trim().Trim('"'))
+
+
     let az arguments =
-        execProcess "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = "" }) 
+        execProcessString "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = "" }) 
 
     let azWorkingDir arguments workingDirectory =
-        execProcess "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = workingDirectory })
+        execProcessString "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = workingDirectory })
 
     let azRedact arguments redactedArgs =
-        execProcess "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = ""; RedactTrace = fun _ -> redactedArgs }) 
+        execProcessString "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = ""; RedactTrace = fun _ -> redactedArgs }) 
 
     let redactValue cmd secret = 
         cmd 
         |> String.replace secret "****" 
 
     let exec arguments = az arguments |> ignore 
+
+    let azResult arguments = 
+        execProcess "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = "" }) id
