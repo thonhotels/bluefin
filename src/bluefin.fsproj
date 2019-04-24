@@ -17,6 +17,8 @@
     <Compile Include="network/ApplicationGateway.fs" />
     <Compile Include="network/VNet.fs" />
     <Compile Include="network/PublicIp.fs" />
+    <Compile Include="role/Assignment.fs" />
+    <Compile Include="webapp/Identity.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
