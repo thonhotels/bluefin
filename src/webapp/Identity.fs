@@ -10,3 +10,6 @@ module Identity =
             | None  -> ""
 
         az ((sprintf "webapp identity assign -g %s -n %s" rg name) + slotArg)
+
+    let getPrincipalId rg name =
+        az (sprintf "webapp identity show -g %s -n %s --query principalId" rg name)
