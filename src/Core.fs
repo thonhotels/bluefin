@@ -66,4 +66,6 @@ module Core =
     let exec arguments = az arguments |> ignore 
 
     let azResult arguments = 
-        execProcess "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = "" }) id
+        let r = execProcess "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = "" }) id
+
+        { r with Result = { r.Result with Output = r.Result.Output.Trim()}}
