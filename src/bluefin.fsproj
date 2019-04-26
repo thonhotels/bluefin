@@ -20,6 +20,7 @@
     <Compile Include="role/Assignment.fs" />
     <Compile Include="webapp/Identity.fs" />
     <Compile Include="ad/User.fs" />
+    <Compile Include="webapp/App.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
