@@ -19,6 +19,7 @@
     <Compile Include="network/PublicIp.fs" />
     <Compile Include="role/Assignment.fs" />
     <Compile Include="webapp/Identity.fs" />
+    <Compile Include="ad/User.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
