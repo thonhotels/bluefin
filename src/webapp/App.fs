@@ -15,6 +15,7 @@ module App =
         planResourceGroup: string option // Set this if app service plan is not in the same resource group as the web app
                                 // on the form: /subscriptions/<subscriptionId>/resourceGroups/<resourcegroup name>
         tags: seq<Tag>          // tags as key/value
+        alwaysOn: bool          // Ensure web app gets loaded all the time, rather unloaded after been idle
     }
 
     let create a =
@@ -31,4 +32,5 @@ module App =
             if Seq.isEmpty a.tags then ""
             else "--tags " + (a.tags |> Seq.map tagToString |> String.concat " ")
         az (sprintf "webapp create -g %s -p %s -n %s %s" a.resourceGroup (planIdOrName a.plan a.planResourceGroup) a.name tagArg) |> ignore 
-        az (sprintf "webapp update -g %s -n %s --https-only true" a.resourceGroup a.name)      
+        az (sprintf "webapp update -g %s -n %s --https-only true" a.resourceGroup a.name) |> ignore
+        az (sprintf "webapp config set -g %s -n %s --always-on %b --remote-debugging-enabled false" a.resourceGroup a.name a.alwaysOn) |> ignore    
