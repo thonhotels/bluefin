@@ -22,6 +22,7 @@
     <Compile Include="ad/User.fs" />
     <Compile Include="webapp/App.fs" />
     <Compile Include="webapp/Deployment.fs" />
+    <Compile Include="sql/Db.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
