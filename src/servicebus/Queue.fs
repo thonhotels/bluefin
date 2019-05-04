@@ -1,4 +1,4 @@
-namespace Bluefin
+namespace Bluefin.Servicebus
 
 open System
 open Bluefin.Core
@@ -70,7 +70,7 @@ module Queue =
     }
 
     let createAuthorizationRule rg name (r:AuthorizationRule) =
-        Core.az (sprintf "servicebus queue authorization-rule create -g %s --namespace-name %s --queue-name %s -n %s --rights %s" rg r.namespaceName name r.name (rightsToString r.rights))
+        az (sprintf "servicebus queue authorization-rule create -g %s --namespace-name %s --queue-name %s -n %s --rights %s" rg r.namespaceName name r.name (rightsToString r.rights))
 
     let create rg name q =
         let forwardDlqArg = 
