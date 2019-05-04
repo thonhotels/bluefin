@@ -2,16 +2,11 @@ namespace Bluefin.Servicebus
 
 open System
 open Bluefin.Core
+open Common
 
 module Topic =
     let getConnectionString rg namespaceName topicName = 
-        az (sprintf "servicebus topic authorization-rule keys list -g %s --namespace-name %s --topic-name %s --name read-write --query primaryConnectionString" rg namespaceName topicName)        
-
-    type MaxSize = MB_1024 | MB_2048 | MB_3072 | MB_4096 | MB_5120
-    let sizeToInt s =
-        Int32.Parse (s.ToString().Replace("MB_", ""))
-
-    type Status = Active | Disabled | ReceiveDisabled | SendDisabled
+        az (sprintf "servicebus topic authorization-rule keys list -g %s --namespace-name %s --topic-name %s --name read-write --query primaryConnectionString" rg namespaceName topicName)
 
     type TopicSettings = {
         namespaceName: string
@@ -59,8 +54,8 @@ module Topic =
         status = Active
     }
 
-    let toDuration (t:TimeSpan) = 
-        System.Xml.XmlConvert.ToString t 
+    let createAuthorizationRule rg name (r:AuthorizationRule) =
+        az (sprintf "servicebus topic authorization-rule create -g %s --namespace-name %s --topic-name %s -n %s --rights %s" rg r.namespaceName name r.name (rightsToString r.rights))
 
     let create rg name q =
         let l1 = sprintf "servicebus topic create -g %s -n %s --namespace-name %s --auto-delete-on-idle %s --default-message-time-to-live %s "

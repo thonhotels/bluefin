@@ -1,20 +1,12 @@
-namespace Bluefin.Servicebus
+namespace Bluefin
 
 open System
 open Bluefin.Core
-
-
+open Bluefin.Servicebus.Common
 
 module Queue =
     let getConnectionString rg namespaceName queueName = 
         az (sprintf "servicebus queue authorization-rule keys list -g %s --namespace-name %s --queue-name %s --name read-write --query primaryConnectionString" rg namespaceName queueName)
-
-    
-    type MaxSize = MB_1024 | MB_2048 | MB_3072 | MB_4096 | MB_5120
-    let sizeToInt s =
-        Int32.Parse (s.ToString().Replace("MB_", ""))
-
-    type Status = Active | Disabled | ReceiveDisabled | SendDisabled
 
     type QueueSettings = {
         namespaceName: string
@@ -77,8 +69,8 @@ module Queue =
         status = Active
     }
 
-    let toDuration (t:TimeSpan) = 
-        System.Xml.XmlConvert.ToString t 
+    let createAuthorizationRule rg name (r:AuthorizationRule) =
+        Core.az (sprintf "servicebus queue authorization-rule create -g %s --namespace-name %s --queue-name %s -n %s --rights %s" rg r.namespaceName name r.name (rightsToString r.rights))
 
     let create rg name q =
         let forwardDlqArg = 
@@ -101,4 +93,5 @@ module Queue =
                     q.maxDeliveryCount (sizeToInt q.maxSize) (q.status.ToString())
                  
         az (l1 + l2 + l3 + l4 + l5) 
+
          
