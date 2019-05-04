@@ -11,12 +11,6 @@ module Az =
 
     let getRedisKey name rg =
         az (sprintf "redis list-keys --name %s --resource-group %s --query primaryKey" name rg)
-
-    let getSecret vaultName secretName = 
-        az (sprintf "keyvault secret show --vault-name %s --name %s --query value" vaultName secretName)
-
-    let setSecret vaultName secretName value = 
-        az (sprintf "keyvault secret set --vault-name %s --name %s --value %s" vaultName secretName value) |> ignore    
     
     let withFirewallOpening ip rg dbServer fn =
             let ruleName = sprintf "temporary-rule-%O" (System.Guid.NewGuid())
