@@ -12,6 +12,5 @@ module Db =
         maxSize: string        // The max storage size in bytes
     }
 
-    // finds user by display name. Will return all users with displayname starting with the given name
     let createElasticPoolDb rg name db =
         az (sprintf "sql db create -g %s -n %s -s %s --elastic-pool %s --collation %s --max-size %s" rg name db.server db.elasticPool db.collation db.maxSize) |> ignore
