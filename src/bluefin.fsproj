@@ -28,6 +28,7 @@
     <Compile Include="servicebus/Queue.fs" />
     <Compile Include="Keyvault.fs" />
     <Compile Include="Resource.fs" />
+    <Compile Include="AppInsights.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
