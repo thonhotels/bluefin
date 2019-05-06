@@ -37,5 +37,12 @@ module AppInsights =
         az (sprintf "resource create -g %s --resource-type Microsoft.Insights/components -n %s -l %s --properties %s" rg name location props) |> ignore
     
     let setDataCap subscriptionId rg appInsightsName componentName dataVolumeCap =
-        let options = sprintf "'{ \"CurrentBillingFeatures\": \"Basic\", \"DataVolumeCap\": { \"Cap\": \"%f\" } }'" dataVolumeCap
-        az (sprintf "resource create --id /subscriptions/%s/resourceGroups/%s/providers/Microsoft.Insights/components/%s/CurrentBillingFeatures/%s -p %s --verbose" subscriptionId rg appInsightsName componentName options) |> ignore
+        let options = sprintf "{ \"CurrentBillingFeatures\": \"Basic\", \"DataVolumeCap\": { \"Cap\": \"%f\" } }" dataVolumeCap
+        azArr [|
+                "resource"
+                "create"
+                "--id"
+                (sprintf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Insights/components/%s/CurrentBillingFeatures/%s" subscriptionId rg appInsightsName componentName)
+                "-p"
+                options
+              |] |> ignore
