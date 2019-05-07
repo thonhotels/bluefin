@@ -9,8 +9,8 @@ module Az =
         |> fun cmd ->     
             azRedact cmd (redactValue cmd password)
 
-    let getRedisKey name rg =
-        az (sprintf "redis list-keys --name %s --resource-group %s --query primaryKey" name rg)
+    let getRedisKey rg name =
+        az (sprintf "redis list-keys --resource-group %s --name %s --query primaryKey" rg name)
     
     let withFirewallOpening ip rg dbServer fn =
             let ruleName = sprintf "temporary-rule-%O" (System.Guid.NewGuid())
