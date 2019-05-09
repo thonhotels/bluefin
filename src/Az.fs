@@ -1,9 +1,9 @@
 ﻿namespace Bluefin
 
 open Bluefin.Core
+open Newtonsoft.Json
 
 module Az =
-
     let login tenantId servicePrincipalId password = 
         sprintf "login --service-principal --username %s  --password %s --tenant %s" servicePrincipalId password tenantId
         |> fun cmd ->     
@@ -22,3 +22,14 @@ module Az =
             finally
                 az (sprintf "sql server firewall-rule delete -g %s --server %s --name %s" rg dbServer ruleName)
                 |> ignore
+
+    type AccessTokenResult = {
+        accessToken: string
+        expiresOn: string
+        subscription: string
+        tenant:string
+        tokenType:string
+    }
+    let getAccessToken resource = 
+        let accessTokenResult = az (sprintf "account get-access-token -o json --resource %s" resource)
+        JsonConvert.DeserializeObject<AccessTokenResult>(accessTokenResult)

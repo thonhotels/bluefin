@@ -9,6 +9,7 @@
     <PackageId>Bluefin</PackageId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Http.fs" />
     <Compile Include="Core.fs" />
     <Compile Include="Az.fs" />
     <Compile Include="Cosmos.fs" />
@@ -17,6 +18,7 @@
     <Compile Include="network/VNet.fs" />
     <Compile Include="network/PublicIp.fs" />
     <Compile Include="role/Assignment.fs" />
+    <Compile Include="webapp\Config.fs" />
     <Compile Include="webapp/Identity.fs" />
     <Compile Include="ad/User.fs" />
     <Compile Include="webapp/App.fs" />
