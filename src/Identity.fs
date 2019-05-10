@@ -16,5 +16,6 @@ module Identity =
 
         let result = put url (Some accessTokenResult.accessToken) (Some (box {location = "westeurope"}))
         match (result) with
-               |(HttpStatusCode.OK, _) -> ()
+               |(HttpStatusCode.OK, value) -> printfn "Updated managed identity (user assigned)"
+               |(HttpStatusCode.Created, value) -> printfn "Created managed identity (user assigned)"
                |(statusCode, value) -> failwithf "Could not create managed identity (user assigned). Status code is %A. Content: %s" statusCode value
