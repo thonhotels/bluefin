@@ -9,8 +9,8 @@
     <PackageId>Bluefin</PackageId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Http.fs" />
     <Compile Include="Core.fs" />
+    <Compile Include="Http.fs" />
     <Compile Include="Az.fs" />
     <Compile Include="Cosmos.fs" />
     <Compile Include="Group.fs" />
@@ -18,11 +18,11 @@
     <Compile Include="network/VNet.fs" />
     <Compile Include="network/PublicIp.fs" />
     <Compile Include="role/Assignment.fs" />
-    <Compile Include="webapp\Config.fs" />
+    <Compile Include="webapp/Config.fs" />
     <Compile Include="webapp/Identity.fs" />
-    <Compile Include="ad/User.fs" />
     <Compile Include="webapp/App.fs" />
     <Compile Include="webapp/Deployment.fs" />
+    <Compile Include="ad/User.fs" />
     <Compile Include="sql/Db.fs" />
     <Compile Include="servicebus/Common.fs" />
     <Compile Include="servicebus/Namespace.fs" />
@@ -31,6 +31,7 @@
     <Compile Include="Keyvault.fs" />
     <Compile Include="Resource.fs" />
     <Compile Include="AppInsights.fs" />
+    <Compile Include="Identity.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />

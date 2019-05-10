@@ -2,6 +2,8 @@ namespace Bluefin
 
 open Fake.Core
 open System.Text.RegularExpressions
+open System.Net.Http
+open Newtonsoft.Json
 
 module Core =
     [<NoComparison>]
@@ -77,3 +79,31 @@ module Core =
         let r = execProcess "az" (argsToArray arguments) (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = "" }) id
 
         { r with Result = { r.Result with Output = r.Result.Output.Trim()}}
+
+    let mutable subscriptionId = ""
+    let mutable private httpClient = None
+
+    type AccessTokenResult = {
+        accessToken: string
+        expiresOn: string
+        subscription: string
+        tenant:string
+        tokenType:string
+    }
+    let getAccessToken resource = 
+        let accessTokenResult = az (sprintf "account get-access-token -o json --resource %s" resource)
+        JsonConvert.DeserializeObject<AccessTokenResult>(accessTokenResult)
+
+    let ManagementHttpClient () =
+        match httpClient with
+        |Some x -> x
+        |None -> failwith "Call init to initialize bluefin"
+
+    let init id location= 
+        subscriptionId <- id    
+        let url = sprintf "https://management.azure.com/subscriptions/%s/" id
+
+        httpClient <- Some (new HttpClient ())
+        httpClient.Value.BaseAddress <- (System.Uri url) 
+        httpClient.Value.DefaultRequestHeaders.Clear ()
+        httpClient.Value.DefaultRequestHeaders.Add ("location", [|location|])   

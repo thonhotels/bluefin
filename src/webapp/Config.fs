@@ -1,9 +1,8 @@
 namespace Bluefin.Webapp
 
-open Bluefin.Az
 open Bluefin.Http
-open System.Net.Http
 open System.Net
+open Bluefin.Core
 
 module Config = 
     
@@ -18,7 +17,6 @@ module Config =
     }
 
     type IpSecurityRestrictionArgs = {
-         subscription: string
          resourceGroup: string
          appName: string
          ipSecurityRestrictions: seq<IpSecurityRestriction>
@@ -34,11 +32,9 @@ module Config =
 
     let addIpSecurityRestriction s = 
         let url = 
-            sprintf "https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Web/sites/%s/config/web?api-version=2018-02-01" s.subscription s.resourceGroup s.appName
+            sprintf "resourceGroups/%s/providers/Microsoft.Web/sites/%s/config/web?api-version=2018-02-01" s.resourceGroup s.appName
 
         let accessTokenResult = getAccessToken "https://management.azure.com"
-
-        let httpClient = new HttpClient ()
 
         let configRequest = {
             properties = {
@@ -46,7 +42,7 @@ module Config =
             }
         }
 
-        let result = put httpClient url (Some accessTokenResult.accessToken) (Some <| box configRequest)
+        let result = put url (Some accessTokenResult.accessToken) (Some <| box configRequest)
 
         match (result) with
                |(HttpStatusCode.OK, _) -> ()

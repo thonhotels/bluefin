@@ -6,19 +6,23 @@ open System.Text
 open System.Net.Http.Headers
 open Newtonsoft.Json.Converters
 open System.Threading.Tasks
+open Core
 
 module Http = 
 
-    let send (client:HttpClient) (method:HttpMethod) (url:string) (accessToken:string option) (payload:System.Object option)  =
+    let send (method:HttpMethod) (url:string) (accessToken:string option) (payload:System.Object option)  =
         let message = new HttpRequestMessage (method, url)
 
         let settings = JsonSerializerSettings()
         settings.Converters.Add(StringEnumConverter())
 
+        printfn "Url: %s%s" ((ManagementHttpClient ()).BaseAddress.ToString()) url
+        printfn "Content: %s" <| JsonConvert.SerializeObject (payload.Value, settings)
+
         message.Content <- Option.fold (fun s v -> new StringContent (JsonConvert.SerializeObject (v, settings), Encoding.UTF8, "application/json")) null payload
         message.Headers.Authorization <- Option.fold (fun s token -> AuthenticationHeaderValue("Bearer", token)) null accessToken 
         async {
-            return! client.SendAsync (message) |> Async.AwaitTask
+            return! (ManagementHttpClient ()).SendAsync (message) |> Async.AwaitTask
         } 
 
     let deserializeResult<'T> (message:HttpResponseMessage) =
@@ -30,23 +34,23 @@ module Http =
                 } |> Async.RunSynchronously
         JsonConvert.DeserializeObject<'T> (readAsString message)
 
-    let get (client:HttpClient) (url:string) (accessToken:string option) =
+    let get (url:string) (accessToken:string option) =
         async { 
-            let! r = send client HttpMethod.Get url accessToken None
+            let! r = send HttpMethod.Get url accessToken None
             return (r.StatusCode, deserializeResult r)
         } |> Async.RunSynchronously
 
-    let post (client:HttpClient) (url:string) (accessToken:string option) (payload:System.Object option) =
+    let post (url:string) (accessToken:string option) (payload:System.Object option) =
         async { 
-            let! r = send client HttpMethod.Post url accessToken payload
+            let! r = send HttpMethod.Post url accessToken payload
             let! content = 
                 (if isNull r.Content then Task.FromResult("") else r.Content.ReadAsStringAsync()) |> Async.AwaitTask
             return (r.StatusCode, content)
         } |> Async.RunSynchronously
 
-    let put (client:HttpClient) (url:string) (accessToken:string option) (payload:System.Object option) =
+    let put (url:string) (accessToken:string option) (payload:System.Object option) =
         async { 
-            let! r = send client HttpMethod.Put url accessToken payload
+            let! r = send HttpMethod.Put url accessToken payload
             let! content = 
                  (if isNull r.Content then Task.FromResult("") else r.Content.ReadAsStringAsync()) |> Async.AwaitTask
             return (r.StatusCode, content)

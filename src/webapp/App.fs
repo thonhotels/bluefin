@@ -17,7 +17,6 @@ module App =
                                 // on the form: /subscriptions/<subscriptionId>/resourceGroups/<resourcegroup name>
         tags: seq<Tag>          // tags as key/value
         alwaysOn: bool          // Ensure web app gets loaded all the time, rather unloaded after been idle
-        subscription: string
         ipSecurityRestrictions: seq<IpSecurityRestriction>
     }
 
@@ -28,7 +27,6 @@ module App =
         planResourceGroup = None
         tags = [||]
         alwaysOn = true
-        subscription = ""
         ipSecurityRestrictions = [||]
     }
 
@@ -50,7 +48,6 @@ module App =
         az (sprintf "webapp config set -g %s -n %s --always-on %b --remote-debugging-enabled false" a.resourceGroup a.name a.alwaysOn) |> ignore    
         if not (Seq.isEmpty a.ipSecurityRestrictions) then 
             addIpSecurityRestriction { 
-                subscription = a.subscription
                 resourceGroup = a.resourceGroup
                 appName = a.name
                 ipSecurityRestrictions = a.ipSecurityRestrictions
