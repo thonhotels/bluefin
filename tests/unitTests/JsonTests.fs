@@ -1,10 +1,8 @@
 module Tests
 
-open System
 open Xunit
 open Newtonsoft.Json
 open Newtonsoft.Json.Converters
-open Bluefin.Servicebus.Account
 
 type Kind = BlobStorage | BlockBlobStorage | FileStorage | Storage | StorageV2
 
