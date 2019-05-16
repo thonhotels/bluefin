@@ -9,6 +9,8 @@
     <PackageId>Bluefin</PackageId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DuConverter.fs" />
+    <Compile Include="OptionConverter.fs" />
     <Compile Include="Core.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Az.fs" />
@@ -32,6 +34,8 @@
     <Compile Include="Resource.fs" />
     <Compile Include="AppInsights.fs" />
     <Compile Include="Identity.fs" />
+    <Compile Include="storage/Account.fs" />
+    <Compile Include="storage/Container.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />

@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "bluefin", "src\bluefin.fsproj", "{E90B1DEF-8846-49BE-9FD7-421374CE0755}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1A92BEFF-E20C-4CB3-9E76-FBB3D5EA0B35}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "unitTests", "tests\unitTests\unitTests.fsproj", "{E0C1D2DD-0879-42A5-83D3-683861EBDA21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,20 @@ Global
 		{E90B1DEF-8846-49BE-9FD7-421374CE0755}.Release|x64.Build.0 = Release|Any CPU
 		{E90B1DEF-8846-49BE-9FD7-421374CE0755}.Release|x86.ActiveCfg = Release|Any CPU
 		{E90B1DEF-8846-49BE-9FD7-421374CE0755}.Release|x86.Build.0 = Release|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Debug|x64.Build.0 = Debug|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Debug|x86.Build.0 = Debug|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Release|x64.ActiveCfg = Release|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Release|x64.Build.0 = Release|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Release|x86.ActiveCfg = Release|Any CPU
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E0C1D2DD-0879-42A5-83D3-683861EBDA21} = {1A92BEFF-E20C-4CB3-9E76-FBB3D5EA0B35}
 	EndGlobalSection
 EndGlobal

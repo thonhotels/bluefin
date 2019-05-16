@@ -15,6 +15,9 @@ module Http =
 
         let settings = JsonSerializerSettings()
         settings.Converters.Add(StringEnumConverter())
+        settings.Converters.Add(DuConverter())
+        settings.Converters.Add(OptionConverter())
+        settings.NullValueHandling <- NullValueHandling.Ignore
 
         printfn "Url: %s%s" ((ManagementHttpClient ()).BaseAddress.ToString()) url
         printfn "Content: %s" <| JsonConvert.SerializeObject (payload.Value, settings)
