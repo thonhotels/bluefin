@@ -73,7 +73,7 @@ type ExpectedOptionObjResult = {
     prop1: string
     prop2: int
     prop3: float
-    prop4: Kind
+    prop4: string
 }
 
 [<Fact>]
@@ -89,11 +89,13 @@ let ``Can serialize options`` () =
         prop1 = "test"
         prop2 = 10
         prop3 = 10.0
-        prop4 = BlobStorage
+        prop4 = "BlobStorage"
     }
 
     let settings = JsonSerializerSettings()
-    settings.Converters.Add(OptionConverter())
+    settings.Converters.Add(StringEnumConverter())
+    settings.Converters.Add(Newtonsoft.Json.Converters.DuConverter())
+    settings.Converters.Add(Newtonsoft.Json.Converters.OptionConverter())
     // if not(System.Diagnostics.Debugger.IsAttached) then
     //   printfn "Please attach a debugger, PID: %d" (System.Diagnostics.Process.GetCurrentProcess().Id)
     // while not(System.Diagnostics.Debugger.IsAttached) do
