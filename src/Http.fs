@@ -17,6 +17,7 @@ module Http =
         settings.Converters.Add(StringEnumConverter())
         settings.Converters.Add(DuConverter())
         settings.Converters.Add(OptionConverter())
+        settings.Converters.Add(TimeSpanConverter())        
         settings.NullValueHandling <- NullValueHandling.Ignore
 
         printfn "Url: %s%s" ((ManagementHttpClient ()).BaseAddress.ToString()) url

@@ -9,8 +9,9 @@
     <PackageId>Bluefin</PackageId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DuConverter.fs" />
-    <Compile Include="OptionConverter.fs" />
+    <Compile Include="JsonConverters/DuConverter.fs" />
+    <Compile Include="JsonConverters/OptionConverter.fs" />
+    <Compile Include="JsonConverters/TimeSpanConverter.fs" />    
     <Compile Include="Core.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Az.fs" />
@@ -29,6 +30,7 @@
     <Compile Include="servicebus/Common.fs" />
     <Compile Include="servicebus/Namespace.fs" />
     <Compile Include="servicebus/Topic.fs" />
+    <Compile Include="servicebus/Subscription.fs" />
     <Compile Include="servicebus/Queue.fs" />
     <Compile Include="Keyvault.fs" />
     <Compile Include="Resource.fs" />
