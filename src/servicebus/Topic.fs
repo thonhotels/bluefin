@@ -62,8 +62,8 @@ module Topic =
                     rg name q.namespaceName (toDuration q.autoDeleteOnIdle) (toDuration q.defaultMessageTimeToLive)
         let l2 = sprintf "--duplicate-detection-history-time-window %s --enable-batched-operations %b --enable-duplicate-detection %b " 
                     (toDuration q.duplicateDetectionHistoryTimeWindow) q.enableBatchedOperations q.enableDuplicateDetection 
-        let l3 = sprintf "--enable-express %b --enable-ordering %b --enable-partitioning %b --max-size %d --status %s" 
-                    q.enableExpress q.enableOrdering q.enablePartitioning (sizeToInt q.maxSize) (q.status.ToString())
+        let l3 = sprintf "--enable-express %b --enable-ordering %b --enable-partitioning %b --status %s" 
+                    q.enableExpress q.enableOrdering q.enablePartitioning (q.status.ToString())
 
         az (l1 + l2 + l3) 
   
