@@ -86,7 +86,19 @@ module Rule =
     type Body = {
         properties: RuleArgs 
     }
-    let create rg namespaceName topicName subscriptionName ruleName (args:RuleArgs)=
+    
+    type RuleResponseValue = {
+        id: string
+        name: string
+        ``type``: string
+        properties: Object
+    }
+
+    type RuleResponse = {
+        value: RuleResponseValue[]        
+    }
+
+    let createIncremental rg namespaceName topicName subscriptionName ruleName (args:RuleArgs) =
 
         let url = 
             sprintf "resourceGroups/%s/providers/Microsoft.ServiceBus/namespaces/%s/topics/%s/subscriptions/%s/rules/%s?api-version=2017-04-01" rg namespaceName topicName subscriptionName ruleName
@@ -99,4 +111,35 @@ module Rule =
                |(HttpStatusCode.Created, value) -> printfn "Created servicebus subscription rule"
                |(statusCode, value) -> failwithf "Could not create servicebus subscription rule. Status code is %A. Content: %s" statusCode value
 
+        ()
+
+    let getRuleNames rg namespaceName topicName subscriptionName =
+        let url = 
+            sprintf "resourceGroups/%s/providers/Microsoft.ServiceBus/namespaces/%s/topics/%s/subscriptions/%s/rules?api-version=2017-04-01" rg namespaceName topicName subscriptionName 
+        let accessTokenResult = getAccessToken "https://management.azure.com"
+
+        let result = get<RuleResponse> url (Some accessTokenResult.accessToken)
+        match (result) with
+               |(HttpStatusCode.OK, response) -> Array.map (fun v -> v.name)  response.value
+               |(statusCode, value) -> failwithf "Could not create servicebus subscription rule. Status code is %A. Content: %A" statusCode value
+    
+    let deleteRule rg namespaceName topicName subscriptionName ruleName =
+        let url = 
+            sprintf "resourceGroups/%s/providers/Microsoft.ServiceBus/namespaces/%s/topics/%s/subscriptions/%s/rules/%s?api-version=2017-04-01" rg namespaceName topicName subscriptionName ruleName
+        let accessTokenResult = getAccessToken "https://management.azure.com"
+
+        let result = delete url (Some accessTokenResult.accessToken)
+        match (result) with
+               |(HttpStatusCode.OK, value) -> printfn "Delete servicebus subscription rule %s" ruleName
+               |(statusCode, value) -> failwithf "Could not create servicebus subscription rule. Status code is %A. Content: %s" statusCode value
+        ()
+
+    let deleteRulesExcept rg namespaceName topicName subscriptionName ruleName =
+        getRuleNames rg namespaceName topicName subscriptionName |>
+        Array.filter (fun n -> n <> ruleName) |>
+        Array.iter (deleteRule rg namespaceName topicName subscriptionName)        
+
+    let createComplete rg namespaceName topicName subscriptionName ruleName (args:RuleArgs) =
+        deleteRulesExcept rg namespaceName topicName subscriptionName ruleName
+        createIncremental rg namespaceName topicName subscriptionName ruleName (args:RuleArgs)
         ()
