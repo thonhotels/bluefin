@@ -31,6 +31,7 @@
     <Compile Include="servicebus/Namespace.fs" />
     <Compile Include="servicebus/Topic.fs" />
     <Compile Include="servicebus/Subscription.fs" />
+    <Compile Include="servicebus/Rule.fs" />    
     <Compile Include="servicebus/Queue.fs" />
     <Compile Include="Keyvault.fs" />
     <Compile Include="Resource.fs" />
