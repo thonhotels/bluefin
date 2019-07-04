@@ -7,6 +7,7 @@
 namespace Bluefin
 
 open Bluefin.Servicebus
+open System
 
 module Jobs =
     type IntervalType = Minute | Hour | Day | Month | Year
@@ -35,9 +36,27 @@ module Jobs =
 
     let createJobSubscriptions rg servicebusNamespace serviceName jobs =
 
-      let createTimeSubscription subscriptionName =
+      let createTimeSubscription subscriptionName intervalType interval  =
+        let divideTimespan (t:TimeSpan) divisor = 
+          TimeSpan.FromTicks (t.Ticks / divisor)
+
+          
+        let timeToLive = 
+          let timespanInterval = 
+            match intervalType with
+            | Minute -> TimeSpan (0,0,interval,0)           
+            | Hour -> TimeSpan (0,interval,0,0)
+            | Day -> TimeSpan (interval,0,0,0)
+            | Month -> TimeSpan (28,0,0,0)
+            | Year -> TimeSpan (28,0,0,0)
+          min (divideTimespan timespanInterval 2L) (TimeSpan.FromDays 14.0)
+          
         Subscription.create
-                      rg servicebusNamespace "time.events" subscriptionName Subscription.defaultSubscription
+                      rg servicebusNamespace "time.events" subscriptionName 
+                      { Subscription.defaultSubscription with
+                          deadLetteringOnMessageExpiration = false
+                          defaultMessageTimeToLive = Some (timeToLive) 
+                      }
       
       let createRule subscriptionName intervalType interval =
                     Rule.createComplete 
@@ -47,7 +66,7 @@ module Jobs =
       let createJob jobDescription =
         let jobName, intervalType, interval = jobDescription
         let subscriptionName = sprintf "%s.%s" serviceName jobName
-        createTimeSubscription subscriptionName
+        createTimeSubscription subscriptionName intervalType interval
         createRule subscriptionName intervalType interval              
         
       jobs |>
