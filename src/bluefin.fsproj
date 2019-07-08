@@ -13,10 +13,12 @@
     <Compile Include="JsonConverters/OptionConverter.fs" />
     <Compile Include="JsonConverters/TimeSpanConverter.fs" />    
     <Compile Include="Core.fs" />
+    <Compile Include="Kube.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Az.fs" />
     <Compile Include="Cosmos.fs" />
     <Compile Include="Group.fs" />
+    <Compile Include="Aks.fs" />
     <Compile Include="network/ApplicationGateway.fs" />
     <Compile Include="network/VNet.fs" />
     <Compile Include="network/PublicIp.fs" />
