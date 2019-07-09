@@ -50,9 +50,6 @@ module Aks =
                 nodepoolName
         ) |> ignore
 
-
-     --nodepool-name
-
     let getCredentials resourceGroup clusterName =
         az (sprintf "aks get-credentials -g %s -n %s" resourceGroup clusterName) |> ignore
 
