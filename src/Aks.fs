@@ -16,12 +16,26 @@ module Aks =
             nodeCount: int
             nodeVmSize: string
             enableAddons: string
+            vnetSubnetId: string
+            maxPods: string
+            workspaceResourceId: string
+            nodepoolName: string
         }
 
+    let getOptionalClusterProp propName propValue =
+        match propValue with
+                | "" -> ""
+                | _ -> sprintf " %s %s" propName propValue
+
     let createK8sCluster cluster = 
+        let vnetSubnetId = getOptionalClusterProp "--vnet-subnet-id" cluster.vnetSubnetId
+        let maxPods = getOptionalClusterProp "--max-pods" cluster.maxPods
+        let workspaceResourceId = getOptionalClusterProp "--workspace-resource-id" cluster.workspaceResourceId
+        let nodepoolName = getOptionalClusterProp "--nodepool-name" cluster.nodepoolName
+
         az (
             sprintf 
-                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys" 
+                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys%s%s%s%s" 
                 cluster.resourceGroup
                 cluster.clusterName
                 cluster.servicePrincipalId
@@ -30,7 +44,14 @@ module Aks =
                 cluster.nodeCount
                 cluster.nodeVmSize
                 cluster.enableAddons
+                vnetSubnetId
+                maxPods
+                workspaceResourceId
+                nodepoolName
         ) |> ignore
+
+
+     --nodepool-name
 
     let getCredentials resourceGroup clusterName =
         az (sprintf "aks get-credentials -g %s -n %s" resourceGroup clusterName) |> ignore
