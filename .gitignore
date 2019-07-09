@@ -330,4 +330,5 @@ ASALocalRun/
 .mfractor/
 
 #ionide files
+.vscode/settings.json
 .ionide
