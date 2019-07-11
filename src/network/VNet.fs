@@ -26,8 +26,8 @@ module VNet =
         let vnetExist =
             let x = showVNet rg name
             exist x
-
         if not vnetExist then
+
             az (sprintf "network vnet create -g %s -n %s --address-prefixes %s" rg name addressPrefixes)
         else
             updateVNet rg name addressPrefixes
