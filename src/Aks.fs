@@ -20,6 +20,9 @@ module Aks =
             maxPods: string
             workspaceResourceId: string
             nodepoolName: string
+            dnsServiceIP: string
+            serviceCIDR: string
+            dockerBridgeCIDR: string
         }
 
     let getOptionalClusterProp propName propValue =
@@ -32,10 +35,13 @@ module Aks =
         let maxPods = getOptionalClusterProp "--max-pods" cluster.maxPods
         let workspaceResourceId = getOptionalClusterProp "--workspace-resource-id" cluster.workspaceResourceId
         let nodepoolName = getOptionalClusterProp "--nodepool-name" cluster.nodepoolName
+        let dnsServiceIP = getOptionalClusterProp "--dns-service-ip" cluster.dnsServiceIP
+        let serviceCIDR = getOptionalClusterProp "--service-cidr" cluster.serviceCIDR
+        let dockerBridgeCIDR = getOptionalClusterProp "--docker-bridge-address" cluster.dockerBridgeCIDR
 
         az (
             sprintf 
-                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys%s%s%s%s" 
+                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys%s%s%s%s%s%s%s" 
                 cluster.resourceGroup
                 cluster.clusterName
                 cluster.servicePrincipalId
@@ -48,6 +54,9 @@ module Aks =
                 maxPods
                 workspaceResourceId
                 nodepoolName
+                dnsServiceIP
+                serviceCIDR
+                dockerBridgeCIDR
         ) |> ignore
 
     let getCredentials resourceGroup clusterName =
