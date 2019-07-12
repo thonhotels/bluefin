@@ -63,16 +63,16 @@ module Aks =
         ) |> ignore
 
     let getCredentials resourceGroup clusterName =
-        az (sprintf "aks get-credentials -g %s -n %s" resourceGroup clusterName) |> ignore
+        az (sprintf "aks get-credentials -g %s -n %s --overwrite-existing" resourceGroup clusterName) |> ignore
 
     let setCluster clusterName =
-        kube (sprintf "config set-cluster %s" clusterName)
+        kube (sprintf "config set-cluster %s" clusterName) |> ignore
     
     let createClusterRoleBinding () = 
         try
-            kube "create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard"
+            kube "create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard" |> ignore
         with
-        | e when e.Message.Contains("(AlreadyExists)") -> ""
+        | e when e.Message.Contains("(AlreadyExists)") -> ()
         | e -> raise e
     
     type Quotas = {
