@@ -36,7 +36,7 @@ module Jobs =
 
     let createJobSubscriptions rg servicebusNamespace serviceName jobs =
 
-      let createTimeSubscription subscriptionName intervalType interval  =
+      let createTimeSubscription subscriptionName intervalType interval lockDuration =
         let divideTimespan (t:TimeSpan) divisor = 
           TimeSpan.FromTicks (t.Ticks / divisor)
 
@@ -56,6 +56,7 @@ module Jobs =
                       { Subscription.defaultSubscription with
                           deadLetteringOnMessageExpiration = false
                           defaultMessageTimeToLive = Some (timeToLive) 
+                          lockDuration = lockDuration
                       }
       
       let createRule subscriptionName intervalType interval =
@@ -64,9 +65,9 @@ module Jobs =
                             (Rule.buildSqlRule (buildFilterString intervalType interval))
 
       let createJob jobDescription =
-        let jobName, intervalType, interval = jobDescription
+        let jobName, intervalType, interval, lockDuration = jobDescription
         let subscriptionName = sprintf "%s.%s" serviceName jobName
-        createTimeSubscription subscriptionName intervalType interval
+        createTimeSubscription subscriptionName intervalType interval lockDuration
         createRule subscriptionName intervalType interval              
         
       jobs |>
