@@ -28,6 +28,7 @@
     <Compile Include="webapp/App.fs" />
     <Compile Include="webapp/Deployment.fs" />
     <Compile Include="ad/User.fs" />
+    <Compile Include="ad/ServicePrincipal.fs" />
     <Compile Include="sql/Db.fs" />
     <Compile Include="servicebus/Common.fs" />
     <Compile Include="servicebus/Namespace.fs" />
