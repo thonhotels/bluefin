@@ -24,26 +24,28 @@ module Aks =
             serviceCIDR: string
             dockerBridgeCIDR: string
             networkPlugin: string
+            dnsNamePrefix: string
         }
 
-    let getOptionalClusterProp propName propValue =
+    let optional propName propValue =
         match propValue with
                 | "" -> ""
                 | _ -> sprintf " %s %s" propName propValue
 
     let createK8sCluster cluster = 
-        let vnetSubnetId = getOptionalClusterProp "--vnet-subnet-id" cluster.vnetSubnetId
-        let maxPods = getOptionalClusterProp "--max-pods" cluster.maxPods
-        let workspaceResourceId = getOptionalClusterProp "--workspace-resource-id" cluster.workspaceResourceId
-        let nodepoolName = getOptionalClusterProp "--nodepool-name" cluster.nodepoolName
-        let dnsServiceIP = getOptionalClusterProp "--dns-service-ip" cluster.dnsServiceIP
-        let serviceCIDR = getOptionalClusterProp "--service-cidr" cluster.serviceCIDR
-        let dockerBridgeCIDR = getOptionalClusterProp "--docker-bridge-address" cluster.dockerBridgeCIDR
-        let networkPlugin = getOptionalClusterProp "--network-plugin" cluster.networkPlugin
+        let vnetSubnetId = optional "--vnet-subnet-id" cluster.vnetSubnetId
+        let maxPods = optional "--max-pods" cluster.maxPods
+        let workspaceResourceId = optional "--workspace-resource-id" cluster.workspaceResourceId
+        let nodepoolName = optional "--nodepool-name" cluster.nodepoolName
+        let dnsServiceIP = optional "--dns-service-ip" cluster.dnsServiceIP
+        let serviceCIDR = optional "--service-cidr" cluster.serviceCIDR
+        let dockerBridgeCIDR = optional "--docker-bridge-address" cluster.dockerBridgeCIDR
+        let networkPlugin = optional "--network-plugin" cluster.networkPlugin
+        let dnsNamePrefix = optional "--dns-name-prefix" cluster.dnsNamePrefix
 
         az (
             sprintf 
-                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys%s%s%s%s%s%s%s%s" 
+                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys%s%s%s%s%s%s%s%s%s" 
                 cluster.resourceGroup
                 cluster.clusterName
                 cluster.servicePrincipalId
@@ -60,6 +62,7 @@ module Aks =
                 serviceCIDR
                 dockerBridgeCIDR
                 networkPlugin
+                dnsNamePrefix
         ) |> ignore
 
     let getCredentials resourceGroup clusterName =
