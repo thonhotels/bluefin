@@ -3,13 +3,16 @@ namespace Bluefin.Role
 open Bluefin.Core
 
 module Assignment =
-    type Scope = 
+    type ScopeElements = 
         { subscription: string
           resourceGroup: string
           provider: string
           key: string
           value: string
         }
+    type Scope = 
+        | ScopeRecord of ScopeElements
+        | ScopeString of string
 
     let private exists assigneeObjectId role scope = 
         let result = azResult (sprintf "role assignment list --assignee %s --role %s --scope %s" assigneeObjectId role scope)
@@ -23,8 +26,12 @@ module Assignment =
                 failwithf "Failed to list role assignement. ExitCode %d. Message: %s" exitCode error
 
     let create assigneeObjectId role s =
+
         let buildScope = 
-            sprintf "/subscriptions/%s/resourceGroups/%s/providers/%s/%s/%s" s.subscription s.resourceGroup s.provider s.key s.value
+            match s with
+                | ScopeRecord r ->
+                    sprintf "/subscriptions/%s/resourceGroups/%s/providers/%s/%s/%s" r.subscription r.resourceGroup r.provider r.key r.value
+                | ScopeString ss -> ss
     
         if exists assigneeObjectId role buildScope then
             ""
