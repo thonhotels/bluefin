@@ -35,3 +35,6 @@ module Identity =
                |(HttpStatusCode.OK, value) -> 
                     value
                |(statusCode, value) -> failwithf "Could not get managed identity (user assigned). Status code is %A. Content: %s" statusCode value
+
+    let resourceId rg name = 
+        (Group.rgId rg) + (sprintf "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/%s" name)    
