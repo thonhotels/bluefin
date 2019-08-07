@@ -28,7 +28,6 @@ module ServicePrincipal =
         displayName: string
         errorUrl: string
         homePage: string
-        informationalUrls: string
         keyCredentials: KeyCredential[]
         logoutUrl: string
         notificationEmailAddresses: string[]        
