@@ -19,5 +19,6 @@ module PublicIp =
 
     let createStandard rg name = 
         createAdvanced rg name AllocationMethod.Static None Sku.Standard
-
-    
+   
+    let resourceId rg name =
+        Common.resourceId rg "publicIPAddresses" name        

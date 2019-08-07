@@ -19,9 +19,12 @@
     <Compile Include="Cosmos.fs" />
     <Compile Include="Group.fs" />
     <Compile Include="Aks.fs" />
+    <Compile Include="network/Common.fs" />
     <Compile Include="network/ApplicationGateway.fs" />
     <Compile Include="network/VNet.fs" />
+    <Compile Include="network/Subnet.fs" />
     <Compile Include="network/PublicIp.fs" />
+    <Compile Include="role/Common.fs" />
     <Compile Include="role/Assignment.fs" />
     <Compile Include="webapp/Config.fs" />
     <Compile Include="webapp/Identity.fs" />
@@ -34,8 +37,8 @@
     <Compile Include="servicebus/Namespace.fs" />
     <Compile Include="servicebus/Topic.fs" />
     <Compile Include="servicebus/Subscription.fs" />
-    <Compile Include="servicebus/Rule.fs" />    
     <Compile Include="servicebus/Queue.fs" />
+    <Compile Include="servicebus/Rule.fs" />    
     <Compile Include="Keyvault.fs" />
     <Compile Include="Resource.fs" />
     <Compile Include="AppInsights.fs" />

@@ -95,3 +95,5 @@ module ApplicationGateway =
         Seq.map (createRules gw.resourceGroup gw.name) gw.rules |> ignore
         
 
+    let resourceId rg name =
+        Common.resourceId rg "applicationgateways" name        

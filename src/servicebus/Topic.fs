@@ -67,3 +67,5 @@ module Topic =
 
         az (l1 + l2 + l3) 
   
+    let resourceId rg nsName name =
+        (Namespace.resourceId rg nsName) + (sprintf "/topics/%s" name)

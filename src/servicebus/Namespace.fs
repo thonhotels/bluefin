@@ -22,3 +22,6 @@ module Namespace =
             else sprintf "--tags %s" (sb.tags |> Seq.map tag |> String.concat " ")
                          
         az (sprintf "servicebus namespace create -g %s -n %s --sku %s %s" rg name (sb.sku.ToString()) tagsArg) 
+
+    let resourceId rg name =
+        Common.resourceId rg "namespaces" name        

@@ -22,3 +22,6 @@ module Group =
     let applyArmTemplate rg templatePath templateFile parameterFile = 
         azWorkingDir (sprintf "group deployment create -g %s --template-file %s --parameters %s" rg templateFile parameterFile) templatePath
             |> ignore
+
+    let rgId name =
+        sprintf "/subscriptions/%s/resourceGroups/%s" subscriptionId name

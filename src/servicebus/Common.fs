@@ -24,3 +24,6 @@ module Common =
         r |>
         Seq.map (fun right -> right.ToString()) |>
         String.concat " "
+
+    let resourceId rg resourceType name = 
+        (Bluefin.Group.rgId rg) + "/providers/Microsoft.ServiceBus/" + (sprintf "%s/%s" resourceType name)
