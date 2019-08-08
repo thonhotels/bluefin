@@ -21,7 +21,7 @@ module Container =
 
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = put url (Some accessTokenResult.accessToken) (Some (box c))
+        let result = put Management url (Some accessTokenResult.accessToken) (Some (box c))
         match (result) with
                |(HttpStatusCode.OK, value) | (HttpStatusCode.Accepted, value) -> printfn "Updated container"
                |(HttpStatusCode.Created, value) -> printfn "Created container"

@@ -52,7 +52,7 @@ module App =
 
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = get<Site> url (Some accessTokenResult.accessToken)
+        let result = get<Site> Management url (Some accessTokenResult.accessToken)
         match (result) with
                |(HttpStatusCode.OK, site) -> Some site
                |(HttpStatusCode.NotFound, _) -> None

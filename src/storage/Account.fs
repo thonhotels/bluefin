@@ -168,7 +168,7 @@ module Account =
 
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = put url (Some accessTokenResult.accessToken) (toArgs storageAccount)
+        let result = put Management url (Some accessTokenResult.accessToken) (toArgs storageAccount)
         match (result) with
                |(HttpStatusCode.OK, value) | (HttpStatusCode.Accepted, value) -> printfn "Updated storage account"
                |(HttpStatusCode.Created, value) -> printfn "Created storage account"

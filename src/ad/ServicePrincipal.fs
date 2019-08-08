@@ -1,7 +1,8 @@
 namespace Bluefin.Ad
 
-open Bluefin.Core
 open System
+open Bluefin.Core
+open Bluefin.Http
 open Newtonsoft.Json
 
 module ServicePrincipal =
@@ -44,3 +45,26 @@ module ServicePrincipal =
     let get id =
         let sp = az (sprintf "ad sp show --id %s" id)
         JsonConvert.DeserializeObject<ServicePrincipal> sp
+
+    type ExistQuery = {
+        objectIds: string[]
+        includeDirectoryObjectReferences: bool 
+    }
+
+    type ExistResponse = {
+        value: Object[]
+    }
+    let exist objId =
+        let deserialize value = 
+            JsonConvert.DeserializeObject<ExistResponse> value
+
+        let objectFound obj =
+            obj.value.Length > 0
+
+        let accessTokenResult = getAccessToken "https://graph.windows.net/"
+
+        let result = post Graph "getObjectsByObjectIds?api-version=1.6" (Some accessTokenResult.accessToken) (Some (box {objectIds = [|objId|];includeDirectoryObjectReferences=true}))
+        match (result) with
+               |(Net.HttpStatusCode.OK, value) -> 
+                    objectFound (deserialize value)              
+               |(statusCode, value) -> failwithf "Failed to get sp. Status code is %A. Content: %s" statusCode value 

@@ -10,7 +10,7 @@ open Core
 
 module Http = 
 
-    let send (method:HttpMethod) (url:string) (accessToken:string option) (payload:System.Object option)  =
+    let send (client:HttpClient) (method:HttpMethod) (url:string) (accessToken:string option) (payload:System.Object option)  =
         let message = new HttpRequestMessage (method, url)
 
         let settings = JsonSerializerSettings()
@@ -20,13 +20,13 @@ module Http =
         settings.Converters.Add(TimeSpanConverter())        
         settings.NullValueHandling <- NullValueHandling.Ignore
 
-        printfn "Url: %s%s" ((ManagementHttpClient ()).BaseAddress.ToString()) url
+        printfn "Url: %s%s" (client.BaseAddress.ToString()) url
         if payload.IsSome then printfn "Content: %s" <| JsonConvert.SerializeObject (payload.Value, settings)
 
         message.Content <- Option.fold (fun s v -> new StringContent (JsonConvert.SerializeObject (v, settings), Encoding.UTF8, "application/json")) null payload
         message.Headers.Authorization <- Option.fold (fun s token -> AuthenticationHeaderValue("Bearer", token)) null accessToken 
         async {
-            return! (ManagementHttpClient ()).SendAsync (message) |> Async.AwaitTask
+            return! client.SendAsync (message) |> Async.AwaitTask
         } 
 
     let deserializeResult<'T> (message:HttpResponseMessage) =
@@ -38,30 +38,40 @@ module Http =
                 } |> Async.RunSynchronously
         JsonConvert.DeserializeObject<'T> (readAsString message)
 
-    let get<'T> (url:string) (accessToken:string option) =
+    type ClientType =
+        | Management 
+        | Graph
+
+    let private toClient = function
+        | Management -> ManagementHttpClient ()
+        | Graph -> GraphClient ()
+
+    let get<'T> ct (url:string) (accessToken:string option) =
         async { 
-            let! r = send HttpMethod.Get url accessToken None
+            let! r = send (toClient ct) HttpMethod.Get url accessToken None
             return (r.StatusCode, deserializeResult<'T> r)
         } |> Async.RunSynchronously
 
-    let post (url:string) (accessToken:string option) (payload:System.Object option) =
+
+
+    let post ct (url:string) (accessToken:string option) (payload:System.Object option) =
         async { 
-            let! r = send HttpMethod.Post url accessToken payload
+            let! r = send (toClient ct) HttpMethod.Post url accessToken payload
             let! content = 
                 (if isNull r.Content then Task.FromResult("") else r.Content.ReadAsStringAsync()) |> Async.AwaitTask
             return (r.StatusCode, content)
         } |> Async.RunSynchronously
 
-    let put (url:string) (accessToken:string option) (payload:System.Object option) =
+    let put ct (url:string) (accessToken:string option) (payload:System.Object option) =
         async { 
-            let! r = send HttpMethod.Put url accessToken payload
+            let! r = send (toClient ct) HttpMethod.Put url accessToken payload
             let! content = 
                  (if isNull r.Content then Task.FromResult("") else r.Content.ReadAsStringAsync()) |> Async.AwaitTask
             return (r.StatusCode, content)
         } |> Async.RunSynchronously
 
-    let delete (url:string) (accessToken:string option) =
+    let delete ct (url:string) (accessToken:string option) =
         async { 
-            let! r = send HttpMethod.Delete url accessToken None
+            let! r = send (toClient ct) HttpMethod.Delete url accessToken None
             return (r.StatusCode, "")
         } |> Async.RunSynchronously

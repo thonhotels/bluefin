@@ -116,7 +116,7 @@ module Keyvault =
 
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = put url (Some accessTokenResult.accessToken) (Some (box args))
+        let result = put Management url (Some accessTokenResult.accessToken) (Some (box args))
         match (result) with
                |(HttpStatusCode.OK, value) | (HttpStatusCode.Accepted, value) -> printfn "Updated keyvault"
                |(HttpStatusCode.Created, value) -> printfn "Created keyvault"

@@ -42,7 +42,7 @@ module Config =
             }
         }
 
-        let result = put url (Some accessTokenResult.accessToken) (Some <| box configRequest)
+        let result = put Management url (Some accessTokenResult.accessToken) (Some <| box configRequest)
 
         match (result) with
                |(HttpStatusCode.OK, _) -> ()

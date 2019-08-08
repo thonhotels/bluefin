@@ -82,6 +82,7 @@ module Core =
 
     let mutable subscriptionId = ""
     let mutable private httpClient = None
+    let mutable private graphClient = None
 
     type AccessTokenResult = {
         accessToken: string
@@ -98,6 +99,11 @@ module Core =
         match httpClient with
         |Some x -> x
         |None -> failwith "Call init to initialize bluefin"
+    
+    let GraphClient () =
+        match graphClient with
+        |Some x -> x
+        |None -> failwith "Call init to initialize bluefin"
 
     let init id location= 
         subscriptionId <- id    
@@ -106,4 +112,10 @@ module Core =
         httpClient <- Some (new HttpClient ())
         httpClient.Value.BaseAddress <- (System.Uri url) 
         httpClient.Value.DefaultRequestHeaders.Clear ()
-        httpClient.Value.DefaultRequestHeaders.Add ("location", [|location|])   
+        httpClient.Value.DefaultRequestHeaders.Add ("location", [|location|]) 
+
+        let graphUrl = sprintf "https://graph.windows.net/%s/" id 
+        graphClient <- Some (new HttpClient ())
+        graphClient.Value.BaseAddress <- (System.Uri graphUrl) 
+        
+

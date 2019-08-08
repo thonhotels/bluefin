@@ -105,7 +105,7 @@ module Rule =
 
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = put url (Some accessTokenResult.accessToken) (Some (box {properties = args}))
+        let result = put Management url (Some accessTokenResult.accessToken) (Some (box {properties = args}))
         match (result) with
                |(HttpStatusCode.OK, value) | (HttpStatusCode.Accepted, value) -> printfn "Updated servicebus subscription rule"
                |(HttpStatusCode.Created, value) -> printfn "Created servicebus subscription rule"
@@ -118,7 +118,7 @@ module Rule =
             sprintf "resourceGroups/%s/providers/Microsoft.ServiceBus/namespaces/%s/topics/%s/subscriptions/%s/rules?api-version=2017-04-01" rg namespaceName topicName subscriptionName 
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = get<RuleResponse> url (Some accessTokenResult.accessToken)
+        let result = get<RuleResponse> Management url (Some accessTokenResult.accessToken)
         match (result) with
                |(HttpStatusCode.OK, response) -> Array.map (fun v -> v.name)  response.value
                |(statusCode, value) -> failwithf "Could not create servicebus subscription rule. Status code is %A. Content: %A" statusCode value
@@ -128,7 +128,7 @@ module Rule =
             sprintf "resourceGroups/%s/providers/Microsoft.ServiceBus/namespaces/%s/topics/%s/subscriptions/%s/rules/%s?api-version=2017-04-01" rg namespaceName topicName subscriptionName ruleName
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = delete url (Some accessTokenResult.accessToken)
+        let result = delete Management url (Some accessTokenResult.accessToken)
         match (result) with
                |(HttpStatusCode.OK, value) -> printfn "Delete servicebus subscription rule %s" ruleName
                |(statusCode, value) -> failwithf "Could not create servicebus subscription rule. Status code is %A. Content: %s" statusCode value

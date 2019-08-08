@@ -62,7 +62,7 @@ module Subscription =
 
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = put url (Some accessTokenResult.accessToken) (Some (box {properties = args}))
+        let result = put Management url (Some accessTokenResult.accessToken) (Some (box {properties = args}))
         match (result) with
                |(HttpStatusCode.OK, value) | (HttpStatusCode.Accepted, value) -> printfn "Updated servicebus subscription"
                |(HttpStatusCode.Created, value) -> printfn "Created servicebus subscription"
