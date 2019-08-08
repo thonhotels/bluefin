@@ -80,6 +80,7 @@ module Core =
 
         { r with Result = { r.Result with Output = r.Result.Output.Trim()}}
 
+    let mutable tennantId = ""
     let mutable subscriptionId = ""
     let mutable private httpClient = None
     let mutable private graphClient = None
@@ -105,16 +106,17 @@ module Core =
         |Some x -> x
         |None -> failwith "Call init to initialize bluefin"
 
-    let init id location= 
-        subscriptionId <- id    
-        let url = sprintf "https://management.azure.com/subscriptions/%s/" id
+    let init tid sid location= 
+        tennantId <- tid   
+        subscriptionId <- sid 
+        let url = sprintf "https://management.azure.com/subscriptions/%s/" sid
 
         httpClient <- Some (new HttpClient ())
         httpClient.Value.BaseAddress <- (System.Uri url) 
         httpClient.Value.DefaultRequestHeaders.Clear ()
         httpClient.Value.DefaultRequestHeaders.Add ("location", [|location|]) 
 
-        let graphUrl = sprintf "https://graph.windows.net/%s/" id 
+        let graphUrl = sprintf "https://graph.windows.net/%s/" tid
         graphClient <- Some (new HttpClient ())
         graphClient.Value.BaseAddress <- (System.Uri graphUrl) 
         
