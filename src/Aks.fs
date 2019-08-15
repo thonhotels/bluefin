@@ -1,7 +1,7 @@
 namespace Bluefin
 
 open Bluefin.Core
-open Bluefin.Kube
+open Bluefin.Kubernetes.Core
 open Fake.IO
 
 module Aks =
@@ -69,11 +69,11 @@ module Aks =
         az (sprintf "aks get-credentials -g %s -n %s --overwrite-existing" resourceGroup clusterName) |> ignore
 
     let setCluster clusterName =
-        kube (sprintf "config set-cluster %s" clusterName) |> ignore
+        kubectl [|"config";"set-cluster";clusterName|] |> ignore
     
     let createClusterRoleBinding () = 
         try
-            kube "create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard" |> ignore
+            kubectl [|"create";"clusterrolebinding";"kubernetes-dashboard";"--clusterrole=cluster-admin";"--serviceaccount=kube-system:kubernetes-dashboard"|] |> ignore
         with
         | e when e.Message.Contains("(AlreadyExists)") -> ()
         | e -> raise e
@@ -95,7 +95,7 @@ metadata:
   name: %s" namespaceName)
         |> File.replaceContent modifiedFile
 
-        kube (sprintf "apply -f %s" modifiedFile) |> ignore
+        kubectl [|"apply";"-f";modifiedFile|] |> ignore
         File.delete(modifiedFile)
     
     let setQuotas quotas namespaceName= 
@@ -119,9 +119,12 @@ spec:
     quotas.maxLimitsMemory)
         |> File.replaceContent modifiedFile
 
-        match namespaceName with
-        | "" -> kube (sprintf "apply -f %s" modifiedFile) |> ignore
-        | name -> kube (sprintf "apply --namespace %s -f %s" name modifiedFile) |> ignore
+        let arguments = seq { 
+            yield! ["apply";"-f";modifiedFile]
+            if namespaceName <> "" then
+                yield! ["--namespace";namespaceName]
+            }
+        kubectl arguments |> ignore
 
         File.delete(modifiedFile)
 
