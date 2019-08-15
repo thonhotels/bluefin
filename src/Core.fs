@@ -16,7 +16,7 @@ module Core =
 
     let defaultOptions = { DisplayName = ""; WorkingDirectory = ""; RedactTrace = id }
 
-    let private execProcess name arguments createOptions resultFn =
+    let internal execProcess name arguments createOptions resultFn =
 
         // if not(System.Diagnostics.Debugger.IsAttached) then
         //   printfn "Please attach a debugger, PID: %d" (System.Diagnostics.Process.GetCurrentProcess().Id)
@@ -47,7 +47,7 @@ module Core =
         with ex ->
             failwithf "Error calling %s %s  dir: %s \n %O" name (joinArgs >> options.RedactTrace <| arguments) options.WorkingDirectory ex      
 
-    let private execProcessString name arguments createOptions =
+    let internal execProcessString name arguments createOptions =
         execProcess name arguments createOptions (fun res -> 
                         if res.ExitCode <> 0 then failwithf "Step failed: %O" res.Result.Error
                         res.Result.Output.Trim().Trim('"'))
