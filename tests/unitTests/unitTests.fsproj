@@ -9,10 +9,12 @@
 
   <ItemGroup>
     <Compile Include="JsonTests.fs" />
+    <Compile Include="KubectlTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fake.Core" Version="5.8.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="xunit" Version="2.4.0" />
@@ -21,6 +23,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\bluefin.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="testfiles/test.yml" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="testfiles/test.dev.json" CopyToOutputDirectory="Always" />
+    <Content Include="testfiles/test2.yml" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

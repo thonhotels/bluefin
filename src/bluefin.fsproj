@@ -13,7 +13,6 @@
     <Compile Include="JsonConverters/OptionConverter.fs" />
     <Compile Include="JsonConverters/TimeSpanConverter.fs" />    
     <Compile Include="Core.fs" />
-    <Compile Include="Kube.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Az.fs" />
     <Compile Include="Cosmos.fs" />
@@ -46,6 +45,8 @@
     <Compile Include="storage/Account.fs" />
     <Compile Include="storage/Container.fs" />
     <Compile Include="Jobs.fs" />
+    <Compile Include="kubernetes/Core.fs" />
+    <Compile Include="kubernetes/Kubectl.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
