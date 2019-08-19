@@ -66,6 +66,9 @@ module Core =
     let azWorkingDir arguments workingDirectory =
         execProcessString "az" (argsToArray arguments) (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = workingDirectory })
 
+    let azWorkingDirArr arguments workingDirectory =
+        execProcessString "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = workingDirectory })
+
     let azRedact arguments redactedArgs =
         execProcessString "az" (argsToArray arguments) (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = ""; RedactTrace = fun _ -> redactedArgs }) 
 

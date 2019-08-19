@@ -16,8 +16,8 @@ module Cosmos =
         DefaultTtl: int
     }
 
-    let getCosmosDbKey rg name = 
-        az (sprintf "cosmosdb list-keys --name %s --resource-group %s --query primaryMasterKey" name rg)
+    let getCosmosDbKey rg name =
+        azArr ["cosmosdb";"list-keys";"--name";name;"--resource-group";rg;"--query";"primaryMasterKey"] 
 
     let cosmosDatabaseExists cosmosDbDatabaseOptions =
         sprintf "cosmosdb database exists -d %s --url-connection %s --key %s" cosmosDbDatabaseOptions.DatabaseName cosmosDbDatabaseOptions.UrlConnection cosmosDbDatabaseOptions.Key

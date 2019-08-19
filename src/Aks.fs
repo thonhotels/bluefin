@@ -66,7 +66,7 @@ module Aks =
         ) |> ignore
 
     let getCredentials resourceGroup clusterName =
-        az (sprintf "aks get-credentials -g %s -n %s --overwrite-existing" resourceGroup clusterName) |> ignore
+        azArr [|"aks";"get-credentials";"-g";resourceGroup;"-n";clusterName;"--overwrite-existing"|] |> ignore
 
     let setCluster clusterName =
         kubectl [|"config";"set-cluster";clusterName|] |> ignore

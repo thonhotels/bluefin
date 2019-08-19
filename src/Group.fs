@@ -13,14 +13,14 @@ module Group =
     }
 
     let createResourceGroup name location =
-        az (sprintf "group create --name %s --location %s" name location)
+        azArr ["group";"create";"--name"; name; "--location"; location]
 
     let findResourceGroupByName name =
-        let r = az (sprintf @"group list --query [?contains(name,'%s')]" name)
+        let r = azArr ["group"; "list"; "--query"; sprintf "[?contains(name,'%s')]" name]
         JsonConvert.DeserializeObject<seq<ResourceGroup>> r
 
     let applyArmTemplate rg templatePath templateFile parameterFile = 
-        azWorkingDir (sprintf "group deployment create -g %s --template-file %s --parameters %s" rg templateFile parameterFile) templatePath
+        azWorkingDirArr ["group";"deployment";"create";"-g";rg;"--template-file";templateFile;"--parameters";parameterFile] templatePath
             |> ignore
 
     let rgId name =
