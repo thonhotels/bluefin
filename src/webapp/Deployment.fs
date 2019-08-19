@@ -11,18 +11,18 @@ module Deployment =
     let setSettings rg webappName slot settings =
         let settingsArg =
             settings |>
-            Seq.map (fun (key, value) -> sprintf "%s=%s" key value) |>
-            String.concat " "
+            Seq.map (fun (key, value) -> sprintf "%s=%s" key value)            
 
-        az (sprintf "webapp config appsettings set -g %s -n %s -s %s --setting %s" rg webappName slot settingsArg) 
+        azArr <| Seq.append ["webapp";"config";"appsettings";"set";"-g";rg;"-n";webappName;"-s";slot;"--setting"] settingsArg
 
     let setConnectionStrings rg webappName slot (connectionString:ConnectionStringType*string) =
         let (cstype, cstring) = connectionString
-        az (sprintf "webapp config connection-string set -g %s -n %s -s %s -t %s --setting %s" rg webappName slot (cstype.ToString()) cstring) |> ignore
+
+        azArr ["webapp";"config";"connection-string";"set";"-g";rg;"-n";webappName;"-s";slot;"-t";cstype.ToString();"--setting";cstring] |> ignore
         ()
 
     let createSlot rg webappName slotName configurationSource =
-        az (sprintf "webapp deployment slot create -g %s -n %s -s %s --configuration-source %s" rg webappName slotName configurationSource) 
+        azArr ["webapp";"deployment";"slot";"create";"-g";rg;"-n";webappName;"-s";slotName;"--configuration-source";configurationSource]
 
     let createStagingSlot rg webappName settings connectionStrings =
         createSlot rg webappName "staging" webappName |> ignore
