@@ -1,6 +1,7 @@
 namespace Bluefin.Kubernetes
 
 open Fake.Core
+open Fake.Core.String.Operators
 open Bluefin.Kubernetes.Core
 open Newtonsoft.Json
 open Fake.IO
@@ -14,31 +15,33 @@ module Kubectl =
         |> Seq.map (fun f -> sprintf "%s/%s" folder f)
         |> Seq.iter apply
 
-    let mergeYml folder env applyFn f =
+    let mergeYml folder applyFn paramsFn f :unit =
         let filename = sprintf "%s/%s" folder f
-        let readParams env = 
-            let paramsFile = String.replace ".yml" (sprintf ".%s.json" env) filename
-            if (File.exists paramsFile) then
-                JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, string>>(File.readAsString paramsFile)
-                |> Seq.map (fun i -> i.Key,i.Value)
-            else
-                Seq.empty
-
+        
         let replaceContent name content = 
             printfn "%s" name
             File.replaceContent name content
 
         let replaceParamsInFile filename =
-            let modifiedFile = String.replace ".yml" "-deploy.yml" filename              
-            readParams env
+            let modifiedFile = "\.y[a]?ml" >=> "-deploy.yml" <| filename
+            paramsFn filename
             |> Seq.fold (fun state (key,value) -> String.replace ("___" + key + "___") value state) (File.readAsString filename)
             |> replaceContent modifiedFile
             modifiedFile
         
         applyFn <| replaceParamsInFile filename
 
-    let mergeYmls folder env files =
-        let mergeYmlFolder = mergeYml folder env apply
+    let mergeYmls folder env parameters files =
+        let readParams env filename = 
+            let paramsFile = "\.y[a]?ml" >=> (sprintf ".%s.json" env) <| filename
+            if (File.exists paramsFile) then
+                JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, string>>(File.readAsString paramsFile)
+                |> Seq.map (fun i -> i.Key,i.Value)
+                |> Seq.append parameters                
+            else
+                parameters
+
+        let mergeYmlFolder fileName = mergeYml folder apply (readParams env) fileName
         files
         |> Seq.iter mergeYmlFolder
     
