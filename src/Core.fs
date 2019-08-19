@@ -95,9 +95,19 @@ module Core =
         tenant:string
         tokenType:string
     }
-    let getAccessToken resource = 
+
+    let private tokens = new System.Collections.Generic.Dictionary<_, _>()
+    
+    let private getAccessTokenEx resource = 
         let accessTokenResult = az (sprintf "account get-access-token -o json --resource %s" resource)
-        JsonConvert.DeserializeObject<AccessTokenResult>(accessTokenResult)
+        let result = JsonConvert.DeserializeObject<AccessTokenResult>(accessTokenResult)
+        tokens.Add(resource,result)
+        result
+
+    let getAccessToken resource =
+        match tokens.TryGetValue resource with
+        | true, token -> token
+        | _ -> getAccessTokenEx resource 
 
     let ManagementHttpClient () =
         match httpClient with
