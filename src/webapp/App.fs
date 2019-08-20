@@ -63,9 +63,11 @@ module App =
         let siteCompatible site =
             let planId =
                 let pRg = match planResourceGroup with 
-                            | Some x -> sprintf "/subscriptions/%s/resourceGroups/%s" subscriptionId x
+                            | Some x -> x
                             | None -> rg
-                sprintf "%s/providers/Microsoft.Web/serverfarms/%s" pRg plan
+                sprintf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Web/serverfarms/%s" subscriptionId pRg plan
+            printfn "serverFarmId: %s" site.properties.serverFarmId
+            printfn "planId %s" planId
             site.properties.serverFarmId = planId
 
 
