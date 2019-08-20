@@ -1,7 +1,6 @@
 namespace Bluefin.Webapp
 
 open Bluefin.Core
-open Config
 open Bluefin.Http
 open System.Net
 
@@ -18,8 +17,8 @@ module App =
         planResourceGroup: string option // Set this if app service plan is not in the same resource group as the web app
                                 // on the form: /subscriptions/<subscriptionId>/resourceGroups/<resourcegroup name>
         tags: seq<Tag>          // tags as key/value
-        alwaysOn: bool          // Ensure web app gets loaded all the time, rather unloaded after been idle
-        ipSecurityRestrictions: seq<IpSecurityRestriction>
+        ipSecurityRestrictions: seq<Config.IpSecurityRestriction>
+        settings: Config.Settings
     }
 
     let defaultWebApp = {
@@ -28,8 +27,8 @@ module App =
         plan = ""
         planResourceGroup = None
         tags = [||]
-        alwaysOn = true
         ipSecurityRestrictions = [||]
+        settings = Config.defaultSettings
     }
 
     type SiteProperties = {
@@ -91,10 +90,11 @@ module App =
 
     let create a =
         createWebApp a.resourceGroup a.plan a.planResourceGroup a.name a.tags
-        az (sprintf "webapp update -g %s -n %s --https-only true" a.resourceGroup a.name) |> ignore
-        az (sprintf "webapp config set -g %s -n %s --always-on %b --remote-debugging-enabled false" a.resourceGroup a.name a.alwaysOn) |> ignore    
+        azArr ["webapp";"update";"-g";a.resourceGroup;"-n";a.name;"--https-only";"true"] |> ignore
+        Config.set a.resourceGroup a.name a.settings
+        
         if not (Seq.isEmpty a.ipSecurityRestrictions) then 
-            addIpSecurityRestriction { 
+            Config.addIpSecurityRestriction { 
                 resourceGroup = a.resourceGroup
                 appName = a.name
                 ipSecurityRestrictions = a.ipSecurityRestrictions
