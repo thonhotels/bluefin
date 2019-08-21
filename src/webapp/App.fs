@@ -66,10 +66,7 @@ module App =
                             | Some x -> x
                             | None -> rg
                 sprintf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Web/serverfarms/%s" subscriptionId pRg plan
-            printfn "serverFarmId: %s" site.properties.serverFarmId
-            printfn "planId %s" planId
             site.properties.serverFarmId = planId
-
 
         let tagToString s =
             if System.String.IsNullOrEmpty s.value then s.key
