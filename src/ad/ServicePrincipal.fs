@@ -70,18 +70,20 @@ module ServicePrincipal =
                     objectFound (deserialize value)              
                |(statusCode, value) -> failwithf "Failed to get sp. Status code is %A. Content: %s" statusCode value 
 
-    let existByFilter objectType (filter:string) =
-        let objectFound obj =
-            obj.value.Length > 0
+    let getByFilter objectType (filter:string) =
         let accessTokenResult = getAccessToken "https://graph.windows.net/"
 
         let url = sprintf "%s?$filter=%s&api-version=1.6" objectType <| HttpUtility.UrlEncode filter
-        let result = Bluefin.Http.get<ExistResponse> Graph url (Some accessTokenResult.accessToken)
+        let result = Bluefin.Http.get Graph url (Some accessTokenResult.accessToken)
         match (result) with
-               |(Net.HttpStatusCode.OK, response) -> 
-                    objectFound response             
+               |(Net.HttpStatusCode.OK, response) -> response                                 
                |(statusCode, response) -> failwithf "Failed to get %s. Status code is %A. Content: %A" objectType statusCode response 
 
+    let existByFilter objectType (filter:string) =
+        let objectFound obj =
+            obj.value.Length > 0
+        getByFilter objectType filter |> objectFound
+        
     let spNameExist name =
         let filter = sprintf "servicePrincipalNames/any(x:x eq '%s')" name 
         existByFilter "servicePrincipals" filter
@@ -89,3 +91,68 @@ module ServicePrincipal =
     let applicationNameExist name =        
         let filter = sprintf "startswith(displayName,'%s')" name 
         existByFilter "applications" filter
+
+    type Application = {
+        objectId: string
+        appId: string
+        displayName: string
+    }
+
+    type GetApplicationResponse = {
+        value: Application[]
+    }
+
+    let getApplicationByName name = 
+        let filter = sprintf "startswith(displayName,'%s')" name 
+        let response = getByFilter "applications" filter 
+        response.value |> Array.head
+
+    type CreateForRbacResponse = {
+        appId: string
+        displayName: string
+        name: string
+        password: string
+        tenant: string
+    }
+
+    type PasswordCredentials = {
+        startDate: string
+        endDate: string
+        keyId: string
+        value: string
+        customKeyIdentifier: string
+    }    
+    type CreateApplicationValues = {
+        availableToOtherTenants: bool
+        homepage: string
+        passwordCredentials: seq<PasswordCredentials>
+        displayName: string
+        identifierUris: seq<string>
+    }
+
+    let private createApplication name spName : Application =
+        let deserialize value = 
+            JsonConvert.DeserializeObject<Application> value
+
+        let accessTokenResult = getAccessToken "https://graph.windows.net/"
+
+        let now = DateTime.Now
+        let result = post Graph "applications?api-version=1.6" 
+                        (Some accessTokenResult.accessToken) 
+                        (Some (box {
+                            availableToOtherTenants = false
+                            homepage = spName
+                            passwordCredentials = [|{
+                                startDate = now.ToString("o")
+                                endDate = now.AddYears(1).ToString("o")
+                                keyId = Guid.NewGuid().ToString()
+                                value = Guid.NewGuid().ToString()
+                                customKeyIdentifier = "//5yAGIAYQBjAA=="
+                            }|]
+                            displayName = name
+                            identifierUris = [|spName|]
+                        }))
+        match (result) with
+               |(Net.HttpStatusCode.Created, value) | (Net.HttpStatusCode.OK, value) -> 
+                    deserialize value              
+               |(statusCode, value) -> failwithf "Failed to create application. Status code is %A. Content: %s" statusCode value       
