@@ -70,16 +70,22 @@ module ServicePrincipal =
                     objectFound (deserialize value)              
                |(statusCode, value) -> failwithf "Failed to get sp. Status code is %A. Content: %s" statusCode value 
 
-    
-    let spNameExist name =
+    let existByFilter objectType (filter:string) =
         let objectFound obj =
             obj.value.Length > 0
         let accessTokenResult = getAccessToken "https://graph.windows.net/"
 
-        let filter = sprintf "servicePrincipalNames/any(x:x eq '%s')" name |> HttpUtility.UrlEncode
-        let url = sprintf "servicePrincipals?$filter=%s&api-version=1.6" filter
+        let url = sprintf "%s?$filter=%s&api-version=1.6" objectType <| HttpUtility.UrlEncode filter
         let result = Bluefin.Http.get<ExistResponse> Graph url (Some accessTokenResult.accessToken)
         match (result) with
                |(Net.HttpStatusCode.OK, response) -> 
                     objectFound response             
-               |(statusCode, response) -> failwithf "Failed to get sp. Status code is %A. Content: %A" statusCode response
+               |(statusCode, response) -> failwithf "Failed to get %s. Status code is %A. Content: %A" objectType statusCode response 
+
+    let spNameExist name =
+        let filter = sprintf "servicePrincipalNames/any(x:x eq '%s')" name 
+        existByFilter "servicePrincipals" filter
+
+    let applicationNameExist name =        
+        let filter = sprintf "startswith(displayName,'%s')" name 
+        existByFilter "applications" filter
