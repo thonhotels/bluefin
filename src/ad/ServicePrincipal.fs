@@ -4,6 +4,7 @@ open System
 open Bluefin.Core
 open Bluefin.Http
 open Newtonsoft.Json
+open System.Web
 
 module ServicePrincipal =
     type KeyCredential = {
@@ -43,7 +44,7 @@ module ServicePrincipal =
     }
     
     let get id =
-        let sp = az (sprintf "ad sp show --id %s" id)
+        let sp = azArr ["ad";"sp";"show";"--id";id]
         JsonConvert.DeserializeObject<ServicePrincipal> sp
 
     type ExistQuery = {
@@ -68,3 +69,17 @@ module ServicePrincipal =
                |(Net.HttpStatusCode.OK, value) -> 
                     objectFound (deserialize value)              
                |(statusCode, value) -> failwithf "Failed to get sp. Status code is %A. Content: %s" statusCode value 
+
+    
+    let spNameExist name =
+        let objectFound obj =
+            obj.value.Length > 0
+        let accessTokenResult = getAccessToken "https://graph.windows.net/"
+
+        let filter = sprintf "servicePrincipalNames/any(x:x eq '%s')" name |> HttpUtility.UrlEncode
+        let url = sprintf "servicePrincipals?$filter=%s&api-version=1.6" filter
+        let result = Bluefin.Http.get<ExistResponse> Graph url (Some accessTokenResult.accessToken)
+        match (result) with
+               |(Net.HttpStatusCode.OK, response) -> 
+                    objectFound response             
+               |(statusCode, response) -> failwithf "Failed to get sp. Status code is %A. Content: %A" statusCode response
