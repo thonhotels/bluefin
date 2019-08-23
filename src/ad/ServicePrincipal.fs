@@ -107,6 +107,11 @@ module ServicePrincipal =
         let response = getByFilter "applications" filter 
         response.value |> Array.head
 
+    let getServicePrincipalByName name =
+        let filter = sprintf "servicePrincipalNames/any(x:x eq '%s')" name  
+        let response = getByFilter "servicePrincipals" filter 
+        response.value |> Array.head
+
     type CreateForRbacResponse = {
         appId: string
         displayName: string
@@ -130,7 +135,7 @@ module ServicePrincipal =
         identifierUris: seq<string>
     }
 
-    let private createApplication name spName : Application =
+    let private createApplication name spName password : Application =
         let deserialize value = 
             JsonConvert.DeserializeObject<Application> value
 
@@ -146,7 +151,7 @@ module ServicePrincipal =
                                 startDate = now.ToString("o")
                                 endDate = now.AddYears(1).ToString("o")
                                 keyId = Guid.NewGuid().ToString()
-                                value = Guid.NewGuid().ToString()
+                                value = password
                                 customKeyIdentifier = "//5yAGIAYQBjAA=="
                             }|]
                             displayName = name
@@ -155,4 +160,89 @@ module ServicePrincipal =
         match (result) with
                |(Net.HttpStatusCode.Created, value) | (Net.HttpStatusCode.OK, value) -> 
                     deserialize value              
-               |(statusCode, value) -> failwithf "Failed to create application. Status code is %A. Content: %s" statusCode value       
+               |(statusCode, value) -> failwithf "Failed to create application. Status code is %A. Content: %s" statusCode value
+
+    type CreateServicePrincipal = {
+        accountEnabled: bool
+        appId: string
+    }
+    let createServicePrincipal appId = 
+        let accessTokenResult = getAccessToken "https://graph.windows.net/"
+
+        let result = post Graph "servicePrincipals?api-version=1.6" 
+                        (Some accessTokenResult.accessToken) 
+                        (Some (box {
+                            accountEnabled = true
+                            appId = appId
+                        }))
+        match (result) with
+               |(Net.HttpStatusCode.Created, value) | (Net.HttpStatusCode.OK, value) -> 
+                    JsonConvert.DeserializeObject<Application> value 
+                               
+               |(statusCode, value) -> failwithf "Failed to create service principal. Status code is %A. Content: %s" statusCode value
+
+    type ResetCredentialsResponse = {
+        appId: string
+        name: string
+        password: string
+        tenant: string
+    }
+    let resetCredentials appId = 
+        let r = azArr ["ad";"sp";"credential";"reset";
+                         "-n";appId;] |>
+                JsonConvert.DeserializeObject<ResetCredentialsResponse>
+        r.password 
+
+    type CreateForRbacResult = {
+        appId: string
+        displayName: string
+        name: string
+        password: string
+        appObjectId: string
+        spObjectId: string
+    }
+
+    let rec ensureServicePrincipalAvailable objId n =
+        printfn "Ensuring Service principal with objectId = %s. available" objId 
+        if n < 36 then 
+            if (exist objId) then () else 
+                Threading.Thread.Sleep 5000
+                printfn "Trying to find Service principal with objectId = %s. %d attempt" objId (n + 1)
+                ensureServicePrincipalAvailable objId (n + 1)
+        else
+            failwithf "Service principal with objectId = %s not found after %d attempts" objId n
+        
+    let createForRbac (name:string)  = //role scope
+        let spName = "http://" + name
+        let buildResult (app:Application) name password spObjectId = {
+            appId = app.appId
+            displayName = app.displayName
+            name = name
+            password = password
+            appObjectId = app.objectId
+            spObjectId = spObjectId
+        }
+
+        if (not <| applicationNameExist name) then
+            if (spNameExist spName) then
+                failwithf "Service principal exists but application does not"
+            printfn "creating application"
+            let app = createApplication name spName <| Guid.NewGuid().ToString()              
+            let sp = createServicePrincipal app.appId
+            let password = resetCredentials app.appId //ensure we use the same algorithm as azure cli
+            buildResult app spName password sp.objectId
+        else
+            printfn "getting existing application"
+            if (not <| spNameExist spName) then
+                failwithf "Application exists but Service principal does not"
+            let app = getApplicationByName name
+            let sp = getServicePrincipalByName spName
+            let password = resetCredentials app.appId
+            buildResult app spName password sp.objectId
+
+    let createForRbacWithRoles (name:string) (rs:seq<string*string>) = //role scope
+        let app = createForRbac name
+        rs 
+        |> Seq.map (fun (role,scope) -> Bluefin.Role.Assignment.createWithRetry app.spObjectId role scope)         
+        |> Seq.iter (printfn "roleresult: %A")
+        app
