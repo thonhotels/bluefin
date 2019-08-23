@@ -83,7 +83,7 @@ module Assignment =
     let createWithRetry objId role (scope:string) =
         let rec attemptCall n =
             if n < 36 then 
-                printfn "Trying to find Service principal with objectId = %s. %d attempt" objId n
+                debugfn "Trying to find Service principal with objectId = %s. %d attempt" objId n
                 let result = create objId role scope
                 match result with
                 | RA roleAssignment -> roleAssignment

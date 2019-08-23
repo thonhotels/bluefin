@@ -19,7 +19,6 @@ module Kubectl =
         let filename = sprintf "%s/%s" folder f
         
         let replaceContent name content = 
-            printfn "%s" name
             File.replaceContent name content
 
         let replaceParamsInFile filename =

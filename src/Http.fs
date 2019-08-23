@@ -20,8 +20,8 @@ module Http =
         settings.Converters.Add(TimeSpanConverter())        
         settings.NullValueHandling <- NullValueHandling.Ignore
 
-        printfn "Url: %s%s" (client.BaseAddress.ToString()) url
-        if payload.IsSome then printfn "Content: %s" <| JsonConvert.SerializeObject (payload.Value, settings)
+        debugfn "Url: %s%s" (client.BaseAddress.ToString()) url
+        if payload.IsSome then debugfn "Content: %s" <| JsonConvert.SerializeObject (payload.Value, settings)
 
         message.Content <- Option.fold (fun s v -> new StringContent (JsonConvert.SerializeObject (v, settings), Encoding.UTF8, "application/json")) null payload
         message.Headers.Authorization <- Option.fold (fun s token -> AuthenticationHeaderValue("Bearer", token)) null accessToken 

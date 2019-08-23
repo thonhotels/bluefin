@@ -203,11 +203,11 @@ module ServicePrincipal =
     }
 
     let rec ensureServicePrincipalAvailable objId n =
-        printfn "Ensuring Service principal with objectId = %s. available" objId 
+        debugfn "Ensuring Service principal with objectId = %s. available" objId 
         if n < 36 then 
             if (exist objId) then () else 
                 Threading.Thread.Sleep 5000
-                printfn "Trying to find Service principal with objectId = %s. %d attempt" objId (n + 1)
+                debugfn "Trying to find Service principal with objectId = %s. %d attempt" objId (n + 1)
                 ensureServicePrincipalAvailable objId (n + 1)
         else
             failwithf "Service principal with objectId = %s not found after %d attempts" objId n
@@ -226,13 +226,13 @@ module ServicePrincipal =
         if (not <| applicationNameExist name) then
             if (spNameExist spName) then
                 failwithf "Service principal exists but application does not"
-            printfn "creating application"
+            debugfn "creating application"
             let app = createApplication name spName <| Guid.NewGuid().ToString()              
             let sp = createServicePrincipal app.appId
             let password = resetCredentials app.appId //ensure we use the same algorithm as azure cli
             buildResult app spName password sp.objectId
         else
-            printfn "getting existing application"
+            debugfn "getting existing application"
             if (not <| spNameExist spName) then
                 failwithf "Application exists but Service principal does not"
             let app = getApplicationByName name
@@ -244,5 +244,5 @@ module ServicePrincipal =
         let app = createForRbac name
         rs 
         |> Seq.map (fun (role,scope) -> Bluefin.Role.Assignment.createWithRetry app.spObjectId role scope)         
-        |> Seq.iter (printfn "roleresult: %A")
+        |> Seq.iter (debugfn "roleresult: %A")
         app

@@ -87,7 +87,11 @@ module Core =
     let mutable subscriptionId = ""
     let mutable private httpClient = None
     let mutable private graphClient = None
-
+    let mutable private debug = false 
+    
+    let debugfn fmt = Printf.kprintf (fun message ->
+        if debug then Trace.tracefn "%s" message) fmt 
+    
     type AccessTokenResult = {
         accessToken: string
         expiresOn: string
@@ -119,7 +123,7 @@ module Core =
         |Some x -> x
         |None -> failwith "Call init to initialize bluefin"
 
-    let init tid sid location= 
+    let init tid sid location = 
         tennantId <- tid   
         subscriptionId <- sid 
         let url = sprintf "https://management.azure.com/subscriptions/%s/" sid
@@ -133,4 +137,6 @@ module Core =
         graphClient <- Some (new HttpClient ())
         graphClient.Value.BaseAddress <- (System.Uri graphUrl) 
         
-
+    let initDev tid sid location = 
+        init tid sid location
+        debug <- true
