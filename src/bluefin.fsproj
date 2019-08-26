@@ -48,7 +48,7 @@
     <Compile Include="storage/Account.fs" />
     <Compile Include="storage/Container.fs" />
     <Compile Include="Jobs.fs" />
-    <Compile Include="AppservicePlan.fs" />
+    <Compile Include="AppServicePlan.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
