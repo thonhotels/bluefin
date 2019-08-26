@@ -1,4 +1,4 @@
-﻿namespace Bluefin
+namespace Bluefin
 
 open Bluefin.Core
 open Bluefin.Common
@@ -27,15 +27,15 @@ module AppServicePlan =
         tags = [||]
     }
 
-    let createPlan rg name settings =
+    let createPlan rg name settings =            
         let arr  = 
             ["appservice";"plan";"create";"-g";rg;"-n";name;                    
                     "--number-of-workers";settings.numberOfWorkers.ToString();
                     "--sku";settings.sku.ToString();
+                    "--location";locationOrDefault settings.location;
             ] 
             @ if settings.hyperv then ["--hyper-v"] else [] 
             @ if settings.isLinux then ["--is-linux"] else []
-            @ match settings.location with | Some location -> ["--location";location] | None -> []
             @ match settings.subscription with | Some subscription -> ["--subscription";subscription] | None -> []
             @ if (not (Seq.isEmpty settings.tags)) then ["--tags";tagsToString settings.tags] else []
 

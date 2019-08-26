@@ -85,6 +85,7 @@ module Core =
 
     let mutable tennantId = ""
     let mutable subscriptionId = ""
+    let mutable defaultLocation = ""
     let mutable private httpClient = None
     let mutable private graphClient = None
     let mutable private debug = false 
@@ -123,9 +124,14 @@ module Core =
         |Some x -> x
         |None -> failwith "Call init to initialize bluefin"
 
+    let locationOrDefault = function 
+        | Some l -> l
+        | None -> defaultLocation 
+
     let init tid sid location = 
         tennantId <- tid   
         subscriptionId <- sid 
+        defaultLocation <- location
         let url = sprintf "https://management.azure.com/subscriptions/%s/" sid
 
         httpClient <- Some (new HttpClient ())

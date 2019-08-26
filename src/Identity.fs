@@ -15,7 +15,7 @@ module Identity =
 
         let accessTokenResult = getAccessToken "https://management.azure.com"
 
-        let result = put Management url (Some accessTokenResult.accessToken) (Some (box {location = "westeurope"}))
+        let result = put Management url (Some accessTokenResult.accessToken) (Some (box {location = defaultLocation}))
         match (result) with
                |(HttpStatusCode.OK, value) -> 
                     printfn "Updated managed identity (user assigned)"
