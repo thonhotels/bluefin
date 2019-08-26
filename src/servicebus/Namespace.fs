@@ -1,6 +1,7 @@
 namespace Bluefin.Servicebus
 
 open Bluefin.Core
+open Bluefin.Common
 
 module Namespace =
     type SkuType = Basic | Premium | Standard
@@ -15,11 +16,9 @@ module Namespace =
     }
 
     let create rg name sb =
-        let tagsArg =
-            let tag (key, value) = 
-                sprintf "%s=%s" key value
+        let tagsArg =            
             if Seq.isEmpty sb.tags then ""
-            else sprintf "--tags %s" (sb.tags |> Seq.map tag |> String.concat " ")
+            else sprintf "--tags %s" (tagsToString sb.tags)
                          
         az (sprintf "servicebus namespace create -g %s -n %s --sku %s %s" rg name (sb.sku.ToString()) tagsArg) 
 

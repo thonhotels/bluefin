@@ -1,14 +1,11 @@
 namespace Bluefin.Webapp
 
 open Bluefin.Core
+open Bluefin.Common
 open Bluefin.Http
 open System.Net
 
 module App =
-    type Tag = {
-        key: string
-        value: string
-    }
     
     type WebApp = { 
         resourceGroup: string   // Name of resource group
@@ -16,7 +13,7 @@ module App =
         plan: string            // Name or resource id of the app service plan
         planResourceGroup: string option // Set this if app service plan is not in the same resource group as the web app
                                 // on the form: /subscriptions/<subscriptionId>/resourceGroups/<resourcegroup name>
-        tags: seq<Tag>          // tags as key/value
+        tags: seq<string*string>          // tags as key/value
         ipSecurityRestrictions: seq<Config.IpSecurityRestriction>
         settings: Config.Settings
     }
@@ -67,10 +64,6 @@ module App =
                             | None -> rg
                 sprintf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Web/serverfarms/%s" subscriptionId pRg plan
             site.properties.serverFarmId = planId
-
-        let tagToString s =
-            if System.String.IsNullOrEmpty s.value then s.key
-            else sprintf "%s=%s" s.key s.value
         
         let planIdOrName name rg =
             match rg with
@@ -79,7 +72,7 @@ module App =
 
         let tagArg =
             if Seq.isEmpty tags then ""
-            else "--tags " + (tags |> Seq.map tagToString |> String.concat " ")
+            else sprintf "--tags %s" (tagsToString tags)
 
         let existing = get rg name
         match existing with

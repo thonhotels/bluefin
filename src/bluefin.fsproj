@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Thon.Hotels.Bluefin</AssemblyName>
@@ -8,11 +8,12 @@
     <RootNamespace>Bluefin</RootNamespace>
     <PackageId>Bluefin</PackageId>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup>        
     <Compile Include="JsonConverters/DuConverter.fs" />
     <Compile Include="JsonConverters/OptionConverter.fs" />
     <Compile Include="JsonConverters/TimeSpanConverter.fs" />    
     <Compile Include="Core.fs" />
+    <Compile Include="Common.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Az.fs" />
     <Compile Include="Cosmos.fs" />
@@ -47,7 +48,7 @@
     <Compile Include="storage/Account.fs" />
     <Compile Include="storage/Container.fs" />
     <Compile Include="Jobs.fs" />
-
+    <Compile Include="AppservicePlan.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
