@@ -1,4 +1,4 @@
-namespace Bluefin
+﻿namespace Bluefin
 
 open Bluefin.Core
 open Bluefin.Common
@@ -37,6 +37,5 @@ module AppServicePlan =
             @ if settings.hyperv then ["--hyper-v"] else [] 
             @ if settings.isLinux then ["--is-linux"] else []
             @ match settings.subscription with | Some subscription -> ["--subscription";subscription] | None -> []
-            @ if (not (Seq.isEmpty settings.tags)) then ["--tags";tagsToString settings.tags] else []
-
+            @ tagsToArgs settings.tags
         azArr arr

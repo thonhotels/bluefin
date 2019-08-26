@@ -10,3 +10,6 @@ module Common =
     let tagsToString tags =    
         if Seq.isEmpty tags then ""
         else (tags |> Seq.map tagToString |> String.concat " ")
+    
+    let tagsToArgs tags = 
+       if Seq.isEmpty tags then [] else ["--tags";tagsToString tags]
