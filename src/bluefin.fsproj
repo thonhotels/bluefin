@@ -49,6 +49,7 @@
     <Compile Include="storage/Container.fs" />
     <Compile Include="Jobs.fs" />
     <Compile Include="AppServicePlan.fs" />
+    <Compile Include="ContainerRegistry.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
