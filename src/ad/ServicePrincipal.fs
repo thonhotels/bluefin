@@ -227,9 +227,9 @@ module ServicePrincipal =
             if (spNameExist spName) then
                 failwithf "Service principal exists but application does not"
             debugfn "creating application"
-            let app = createApplication name spName <| Guid.NewGuid().ToString()              
+            let password = Guid.NewGuid().ToString()
+            let app = createApplication name spName password             
             let sp = createServicePrincipal app.appId
-            let password = resetCredentials app.appId //ensure we use the same algorithm as azure cli
             buildResult app spName password sp.objectId
         else
             debugfn "getting existing application"
