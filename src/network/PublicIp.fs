@@ -20,8 +20,8 @@ module PublicIp =
     let createBasic rg name (allocationMethod:AllocationMethod) = 
         createAdvanced rg name allocationMethod None Sku.Basic
 
-    let createStandard rg name = 
-        createAdvanced rg name AllocationMethod.Static None Sku.Standard
+    let createStandard rg name dnsName = 
+        createAdvanced rg name AllocationMethod.Static (Some dnsName) Sku.Standard
    
     let resourceId rg name =
         Common.resourceId rg "publicIPAddresses" name        
