@@ -10,6 +10,14 @@ module Kubectl =
     let apply ymlFilePath =
         kubectl [|"apply"; "-f"; ymlFilePath|] |> ignore
 
+    let createNamespace name =
+        kubectl [|"create"; "namespace"; name|] |> ignore
+
+    let label resourceType name kv =
+        let (key, value) = kv
+        let kvString = sprintf "%s=%s" key value
+        kubectl [|"label"; resourceType; name; kvString|] |> ignore
+
     let applyYmls folder files =
         files
         |> Seq.map (fun f -> sprintf "%s/%s" folder f)
