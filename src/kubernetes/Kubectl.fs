@@ -10,6 +10,16 @@ module Kubectl =
     let apply ymlFilePath =
         kubectl [|"apply"; "-f"; ymlFilePath|] |> ignore
 
+    let applyWithReplacements filename replacements =        
+        let replaceParamsInFile filename =
+            let modifiedFile = "\.y[a]?ml" >=> "-deploy.yml" <| filename
+            replacements
+            |> Seq.fold (fun state (key,value) -> String.replace ("___" + key + "___") value state) (File.readAsString filename)
+            |> File.replaceContent modifiedFile
+            modifiedFile
+        
+        apply <| replaceParamsInFile filename 
+
     let createNamespace name =
         kubectl [|"create"; "namespace"; name|] |> ignore
 
