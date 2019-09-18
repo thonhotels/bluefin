@@ -14,7 +14,7 @@ module Kubectl =
         let replaceParamsInFile filename =
             let modifiedFile = "\.y[a]?ml" >=> "-deploy.yml" <| filename
             replacements
-            |> Seq.fold (fun state (key,value) -> String.replace ("___" + key + "___") value state) (File.readAsString filename)
+            |> Seq.fold (fun state (key,value) -> String.replace ("${" + key + "}") value state) (File.readAsString filename)
             |> File.replaceContent modifiedFile
             modifiedFile
         
@@ -42,7 +42,7 @@ module Kubectl =
         let replaceParamsInFile filename =
             let modifiedFile = "\.y[a]?ml" >=> "-deploy.yml" <| filename
             paramsFn filename
-            |> Seq.fold (fun state (key,value) -> String.replace ("___" + key + "___") value state) (File.readAsString filename)
+            |> Seq.fold (fun state (key,value) -> String.replace ("${" + key + "}") value state) (File.readAsString filename)
             |> replaceContent modifiedFile
             modifiedFile
         
