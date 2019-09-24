@@ -61,10 +61,14 @@ module App =
             let planId =
                 let pRg = match planResourceGroup with 
                             | Some x -> x
-                            | None -> rg
-                sprintf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Web/serverfarms/%s" subscriptionId pRg plan
-            site.properties.serverFarmId = planId
-        
+                            | None -> sprintf "/subscriptions/%s/resourceGroups/%s" subscriptionId rg
+                sprintf "%s/providers/Microsoft.Web/serverfarms/%s" pRg plan
+            if (site.properties.serverFarmId <> planId) then
+                Fake.Core.Trace.tracefn "Plan ids differ: New %s. Existing %s" site.properties.serverFarmId planId
+                false
+            else
+                true
+
         let planIdOrName name rg =
             match rg with
             | Some x -> sprintf "%s/providers/Microsoft.Web/serverfarms/%s" x name
