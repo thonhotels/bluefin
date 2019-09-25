@@ -64,7 +64,7 @@ module App =
                             | None -> sprintf "/subscriptions/%s/resourceGroups/%s" subscriptionId rg
                 sprintf "%s/providers/Microsoft.Web/serverfarms/%s" pRg plan
             if (site.properties.serverFarmId <> planId) then
-                Fake.Core.Trace.tracefn "Plan ids differ: New %s. Existing %s" site.properties.serverFarmId planId
+                Fake.Core.Trace.tracefn "Plan ids differ: Existing %s. New %s" site.properties.serverFarmId planId
                 false
             else
                 true
