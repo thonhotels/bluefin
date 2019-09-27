@@ -9,5 +9,5 @@ spec:
   - http:
       paths:
       - backend:
-          serviceName: ___SERVICE_NAME___
-          servicePort: ___SERVICE_PORT___
+          serviceName: ${SERVICE_NAME}
+          servicePort: ${SERVICE_PORT}

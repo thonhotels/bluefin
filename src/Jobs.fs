@@ -12,7 +12,7 @@ open System
 module Jobs =
     type IntervalType = Minute | Hour | Day | Month | Year
 
-    let private buildFilterString intervalType interval = 
+    let buildFilterString intervalType interval = 
         let typeToLabel = 
           match intervalType with
           | Minute -> "(sys.Label = 'Time.Events.MinuteHasPassed')"
@@ -30,8 +30,13 @@ module Jobs =
             | Day -> "Day"
             | Month -> "Month"
             | Year -> "Year"
-          sprintf "((%s %% %d) = 0)" propName interval
-          
+         
+          let runAt0 = function 
+            | Minute when 60 % interval <> 0 -> "Minute > 0 AND "
+            | _ -> ""    
+
+          sprintf "(%s((%s %% %d) = 0))" (runAt0 intervalType) propName interval
+
         if interval = 0 then typeToLabel else (sprintf "%s AND %s" typeToLabel (buildIntervalFilter interval))
 
     let createJobSubscriptions rg servicebusNamespace serviceName jobs =

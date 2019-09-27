@@ -4,10 +4,13 @@ open Bluefin.Kubernetes
 open Xunit
 open Fake.IO
 
+let paramsFn f =
+    [("SERVICE_NAME","sname");("SERVICE_PORT","pname")] 
 
 [<Fact>]
 let ``My test`` () =
-    Kubectl.mergeYml "testfiles" "dev" ignore "test.yml" |> ignore
+    
+    Kubectl.mergeYml "testfiles" ignore paramsFn "test.yml" |> ignore
     GlobbingPattern.create "testfiles/*deploy.yml"
     |> File.deleteAll
 
@@ -28,7 +31,7 @@ let ``params files are not required`` () =
   GlobbingPattern.create "testfiles/*deploy.yml"
   |> File.deleteAll
 
-  let mergeYmlFolder = Kubectl.mergeYml "testfiles" "dev" ignore
+  let mergeYmlFolder = Kubectl.mergeYml "testfiles" ignore paramsFn 
   
   [|"test.yml";"test2.yml"|]  
   |> Seq.iter mergeYmlFolder
