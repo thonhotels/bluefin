@@ -4,10 +4,18 @@ open Bluefin.Core
 open Newtonsoft.Json
 
 module Az =
-    let login tenantId servicePrincipalId password = 
-        sprintf "login --service-principal --username %s  --password %s --tenant %s" servicePrincipalId password tenantId
-        |> fun cmd ->     
-            azRedact cmd (redactValue cmd password)
+    let login servicePrincipalId password = 
+        azRedact [
+            "login"
+            "--service-principal"
+            "--username"
+            servicePrincipalId
+            "--password"
+            password
+            "--tenant"
+            tenantId]
+            (sprintf "login --service-principal --username %s  --password *** --tenant %s" servicePrincipalId tenantId )
+        |> ignore
 
     let getRedisKey rg name =
         az (sprintf "redis list-keys --resource-group %s --name %s --query primaryKey" rg name)

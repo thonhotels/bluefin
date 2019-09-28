@@ -70,11 +70,10 @@ module Core =
         execProcessString "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = workingDirectory })
 
     let azRedact arguments redactedArgs =
-        execProcessString "az" (argsToArray arguments) (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = ""; RedactTrace = fun _ -> redactedArgs }) 
+        execProcessString "az" arguments (fun o -> { o with DisplayName = "Azure CLI"; WorkingDirectory = ""; RedactTrace = fun _ -> redactedArgs }) 
 
     let redactValue cmd secret = 
-        cmd 
-        |> String.replace secret "****" 
+        String.replace secret "****" cmd
 
     let exec arguments = az arguments |> ignore 
 
@@ -83,7 +82,7 @@ module Core =
 
         { r with Result = { r.Result with Output = r.Result.Output.Trim()}}
 
-    let mutable tennantId = ""
+    let mutable tenantId = ""
     let mutable subscriptionId = ""
     let mutable defaultLocation = ""
     let mutable private httpClient = None
@@ -129,7 +128,7 @@ module Core =
         | None -> defaultLocation 
 
     let init tid sid location = 
-        tennantId <- tid   
+        tenantId <- tid   
         subscriptionId <- sid 
         defaultLocation <- location
         let url = sprintf "https://management.azure.com/subscriptions/%s/" sid

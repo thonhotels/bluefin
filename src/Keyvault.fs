@@ -11,10 +11,19 @@ module Keyvault =
         az (sprintf "keyvault secret show --vault-name %s --name %s --query value" vaultName name)
 
     let setSecret vaultName name value = 
-        azRedact 
-            (sprintf "keyvault secret set --vault-name %s --name %s --value %s" vaultName name value)
-            (sprintf "keyvault secret set --vault-name %s --name %s --value %s" vaultName name "****")
-            |> ignore    
+        azRedact ["keyvault"
+                  "secret"
+                  "set"
+                  "--vault-name"
+                  vaultName
+                  "--name"
+                  name
+                  "--value"
+                  value]
+            (sprintf "keyvault secret set --vault-name %s --name %s --value ****" 
+                vaultName 
+                name)
+        |> ignore
 
     // type CertificatePermission = encrypt | decrypt | wrapKey | unwrapKey | sign |
     //                                 verify | get | list | create | update | import |

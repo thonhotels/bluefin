@@ -19,30 +19,91 @@ module Cosmos =
     let getCosmosDbKey rg name =
         azArr ["cosmosdb";"list-keys";"--name";name;"--resource-group";rg;"--query";"primaryMasterKey"] 
 
-    let cosmosDatabaseExists cosmosDbDatabaseOptions =
-        sprintf "cosmosdb database exists -d %s --url-connection %s --key %s" cosmosDbDatabaseOptions.DatabaseName cosmosDbDatabaseOptions.UrlConnection cosmosDbDatabaseOptions.Key
-        |> fun cmd ->     
-             azRedact cmd (redactValue cmd cosmosDbDatabaseOptions.Key)
-    
+    let cosmosDatabaseExists cosmosDbDatabaseOptions =    
+        let databaseExists = 
+            azRedact [
+                "cosmosdb"
+                "database"
+                "exists"
+                "-d"
+                cosmosDbDatabaseOptions.DatabaseName
+                "--url-connection"
+                cosmosDbDatabaseOptions.UrlConnection
+                "--key"
+                cosmosDbDatabaseOptions.Key]
+                (sprintf "cosmosdb database exists -d %s --url-connection %s --key ***" 
+                    cosmosDbDatabaseOptions.DatabaseName
+                    cosmosDbDatabaseOptions.UrlConnection)
+        databaseExists = "true"
+  
     let cosmosCollectionExists cosmosDbDatabaseOptions cosmosDbCollectionOptions = 
-        sprintf "cosmosdb collection exists -d %s --url-connection %s --key %s -c %s" cosmosDbDatabaseOptions.DatabaseName cosmosDbDatabaseOptions.UrlConnection cosmosDbDatabaseOptions.Key cosmosDbCollectionOptions.CollectionName
-        |>  fun cmd -> 
-            azRedact cmd (redactValue cmd cosmosDbDatabaseOptions.Key) 
+        let collectionExists = 
+            azRedact [
+                "cosmosdb"
+                "collection"
+                "exists"
+                "-d"
+                cosmosDbDatabaseOptions.DatabaseName
+                "--url-connection"
+                cosmosDbDatabaseOptions.UrlConnection
+                "--key"
+                cosmosDbDatabaseOptions.Key
+                "-c"
+                cosmosDbCollectionOptions.CollectionName] 
+                (sprintf "cosmosdb collection exists -d %s --url-connection %s --key *** -c %s" 
+                    cosmosDbDatabaseOptions.DatabaseName 
+                    cosmosDbDatabaseOptions.UrlConnection 
+                    cosmosDbCollectionOptions.CollectionName)
+        collectionExists = "true"
+
     
     let createCosmosDatabase cosmosDbDatabaseOptions = 
         let databaseExists = cosmosDatabaseExists cosmosDbDatabaseOptions
                 
-        if (databaseExists = "false") then
-            sprintf "cosmosdb database create -d %s --url-connection %s --key %s" cosmosDbDatabaseOptions.DatabaseName cosmosDbDatabaseOptions.UrlConnection cosmosDbDatabaseOptions.Key
-            |> fun cmd ->
-                azRedact cmd (redactValue cmd cosmosDbDatabaseOptions.Key) 
-                |> ignore
+        if not databaseExists then
+            azRedact 
+                ["cosmosdb"
+                 "database"
+                 "create"
+                 "-d"
+                 cosmosDbDatabaseOptions.DatabaseName
+                 "--url-connection"
+                 cosmosDbDatabaseOptions.UrlConnection
+                 "--key"
+                 cosmosDbDatabaseOptions.Key] 
+                (sprintf "cosmosdb database create -d %s --url-connection %s --key ***" 
+                    cosmosDbDatabaseOptions.DatabaseName 
+                    cosmosDbDatabaseOptions.UrlConnection)
+            |> ignore
 
     let createCosmosCollection cosmosDbDatabaseOptions cosmosDbCollectionOptions = 
         let collectionExists = cosmosCollectionExists cosmosDbDatabaseOptions cosmosDbCollectionOptions
         
-        if (collectionExists = "false") then
-            sprintf "cosmosdb collection create -d %s --url-connection %s --key %s -c %s --throughput %i --partition-key-path %s --default-ttl %i" cosmosDbDatabaseOptions.DatabaseName cosmosDbDatabaseOptions.UrlConnection cosmosDbDatabaseOptions.Key cosmosDbCollectionOptions.CollectionName cosmosDbCollectionOptions.Throughput cosmosDbCollectionOptions.PartitionKey cosmosDbCollectionOptions.DefaultTtl
-            |> fun cmd ->
-                azRedact cmd (redactValue cmd cosmosDbDatabaseOptions.Key) 
-                |> ignore
+        if not collectionExists then
+            azRedact 
+                ["cosmosdb"
+                 "collection"
+                 "create"
+                 "-d"
+                 cosmosDbDatabaseOptions.DatabaseName
+                 "--url-connection"
+                 cosmosDbDatabaseOptions.UrlConnection
+                 "--key"
+                 cosmosDbDatabaseOptions.Key
+                 "-c"
+                 cosmosDbCollectionOptions.CollectionName
+                 "--throughput"
+                 string cosmosDbCollectionOptions.Throughput
+                 "--partition-key-path"
+                 cosmosDbCollectionOptions.PartitionKey
+                 "--default-ttl"
+                 string cosmosDbCollectionOptions.DefaultTtl
+                 ] 
+                (sprintf "cosmosdb collection create -d %s --url-connection %s --key **** -c %s --throughput %i --partition-key-path %s --default-ttl %i" 
+                    cosmosDbDatabaseOptions.DatabaseName 
+                    cosmosDbDatabaseOptions.UrlConnection 
+                    cosmosDbCollectionOptions.CollectionName 
+                    cosmosDbCollectionOptions.Throughput 
+                    cosmosDbCollectionOptions.PartitionKey 
+                    cosmosDbCollectionOptions.DefaultTtl)
+            |> ignore
