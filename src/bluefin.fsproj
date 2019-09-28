@@ -51,6 +51,7 @@
     <Compile Include="AppServicePlan.fs" />
     <Compile Include="ContainerRegistry.fs" />
     <Compile Include="AppConfig.fs" />
+    <Compile Include="Docker.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
