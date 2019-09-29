@@ -4,7 +4,8 @@ open Core
 
 module Docker =    
     let build file image =
-        execProcess 
+
+        execProcessString 
             "docker" 
             [   "build"
                 "-f"
@@ -13,13 +14,14 @@ module Docker =
                 image
                 "."]
             (fun o -> { o with DisplayName = "Docker" }) 
-        |> ignore   
+        |> debugfn "%s"
+
     let push image = 
-        execProcess 
+        execProcessString 
             "docker" 
             [   "push"
                 image]
             (fun o -> { o with DisplayName = "Docker" }) 
-        |> ignore    
+        |> debugfn "%s"   
 
                             

@@ -15,7 +15,7 @@ module Az =
             "--tenant"
             tenantId]
             (sprintf "login --service-principal --username %s  --password *** --tenant %s" servicePrincipalId tenantId )
-        |> ignore
+        |> debugfn "%s"
 
     let getRedisKey rg name =
         az (sprintf "redis list-keys --resource-group %s --name %s --query primaryKey" rg name)
