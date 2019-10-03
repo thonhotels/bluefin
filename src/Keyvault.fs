@@ -108,12 +108,12 @@ module Keyvault =
             family = SkuFamily.A
             name = "standard"
         }
-        tenantId = ""
+        tenantId = tenantId
         vaultUri = None
     }
 
     let defaultArgs = {
-        location = ""
+        location = defaultLocation
         properties = defaultProperties
         tags = Map.empty
     }
@@ -133,4 +133,11 @@ module Keyvault =
 
         ()
 
+    let getSecretPermission objectId secrets = 
+      { applicationId = None
+        objectId = objectId
+        permissions = { emptyPermissions  with 
+                          secrets = secrets
+                      }
+        tenantId = tenantId}
     
