@@ -12,7 +12,7 @@ module Kubectl =
 
     let applyWithReplacements filename replacements =        
         let replaceParamsInFile filename =
-            let modifiedFile = "\.y[a]?ml" >=> "-deploy.yml" <| filename
+            let modifiedFile = "\.y[a]?ml" >=> "-deploy.yaml" <| filename
             replacements
             |> Seq.fold (fun state (key,value) -> String.replace ("${" + key + "}") value state) (File.readAsString filename)
             |> File.replaceContent modifiedFile
@@ -40,7 +40,7 @@ module Kubectl =
             File.replaceContent name content
 
         let replaceParamsInFile filename =
-            let modifiedFile = "\.y[a]?ml" >=> "-deploy.yml" <| filename
+            let modifiedFile = "\.y[a]?ml" >=> "-deploy.yaml" <| filename
             paramsFn filename
             |> Seq.fold (fun state (key,value) -> String.replace ("${" + key + "}") value state) (File.readAsString filename)
             |> replaceContent modifiedFile

@@ -88,7 +88,7 @@ module Aks =
     }
 
     let createNamespace namespaceName = 
-        let modifiedFile = "namespace.yml"
+        let modifiedFile = "namespace.yaml"
         (sprintf "apiVersion: v1
 kind: Namespace
 metadata:
@@ -99,7 +99,7 @@ metadata:
         File.delete(modifiedFile)
     
     let setQuotas quotas namespaceName= 
-        let modifiedFile = "quotas.yml"
+        let modifiedFile = "quotas.yaml"
         (sprintf "apiVersion: v1
 kind: ResourceQuota
 metadata:
