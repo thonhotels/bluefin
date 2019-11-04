@@ -1,11 +1,16 @@
 namespace Bluefin.Role
 
 module Common =
-    let roleDefinition roleId = sprintf "/subscriptions/%s/providers/Microsoft.Authorization/roleDefinitions/%s" Bluefin.Core.subscriptionId roleId
-    
+    let roleDefinition roleId =
+        sprintf "/subscriptions/%s/providers/Microsoft.Authorization/roleDefinitions/%s" Bluefin.Core.subscriptionId
+            roleId
+
     let Owner = roleDefinition "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
     let Contributor = roleDefinition "b24988ac-6180-42a0-ab88-20f7382dd24c"
     let Reader = roleDefinition "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+    let APIManagementServiceContributor = "312a565d-c81f-4fd8-895a-4e21e48d571c"
+    let APIManagementServiceOperator = "e022efe7-f5ba-4159-bbe4-b44f577e9b61"
+    let APIManagementServiceReader = "71522526-b88f-4d52-b57f-d31fc3546d0d"
     let AcrDelete = roleDefinition "c2f4ef07-c644-48eb-af81-4b1b4947fb11"
     let AcrImageSigner = roleDefinition "6cef56e8-d556-48e5-a04f-b8e64114680f"
     let AcrPull = roleDefinition "7f951dda-4ed3-4680-a7ca-43fe172d538d"
@@ -45,4 +50,4 @@ module Common =
     let StorageQueueDataMessageProcessor = roleDefinition "8a0f0c08-91a1-4084-bc3d-661d67233fed"
     let StorageQueueDataMessageSender = roleDefinition "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
     let StorageQueueDataReader = roleDefinition "19e7f393-937e-4f77-808e-94535e297925"
-    
+ 
