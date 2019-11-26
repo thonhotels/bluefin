@@ -39,7 +39,7 @@ module VNetIntegration =
         sprintf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s" subscriptionId vnetRg vnetName subnetName
 
     let buildUrl rg siteName =
-        sprintf "/resourceGroups/%s/providers/Microsoft.Web/sites/%s/networkconfig/virtualNetwork?api-version=2018-11-01" rg siteName
+        sprintf "resourceGroups/%s/providers/Microsoft.Web/sites/%s/networkconfig/virtualNetwork?api-version=2018-11-01" rg siteName
 
     let get rg siteName =
         let url = buildUrl rg siteName
