@@ -15,11 +15,15 @@ module VNetIntegration =
         properties: CreateVNetConnectionProperties
         id: string
         location: string
+        name: string
+        [<JsonProperty("type")>]
+        _type: string
+        //type: string ""
     }
     let buildRequest rg siteName location subnetResourceId =
         let id = 
             sprintf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Web/sites/%s/config/virtualNetwork" subscriptionId rg siteName
-        {id = id;location=location;properties={subnetResourceId=subnetResourceId;swiftSupported="true"}}
+        {id = id;location=location;properties={subnetResourceId=subnetResourceId;swiftSupported="true"};name="virtualNetwork";_type="Microsoft.Web/sites/config"}
 
     type Properties = {
         subnetResourceId: string
