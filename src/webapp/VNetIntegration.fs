@@ -18,7 +18,6 @@ module VNetIntegration =
         name: string
         [<JsonProperty("type")>]
         _type: string
-        //type: string ""
     }
     let buildRequest rg siteName location subnetResourceId =
         let id = 
