@@ -33,6 +33,10 @@ module Kubectl =
         |> Seq.map (fun f -> sprintf "%s/%s" folder f)
         |> Seq.iter apply
 
+    let applyK folder env =
+        let kfolder = (sprintf "%s/overlays/%s" folder env)
+        kubectl [|"apply"; "-k"; kfolder|] |> ignore
+
     let mergeYml folder applyFn paramsFn f :unit =
         let filename = sprintf "%s/%s" folder f
         
