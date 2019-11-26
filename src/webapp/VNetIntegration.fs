@@ -49,7 +49,7 @@ module VNetIntegration =
         match (result) with
                |(HttpStatusCode.OK, value) -> 
                     value
-               |(statusCode, value) -> failwithf "Could not get vnet integration %s. Status code is %A. Content: %A" id statusCode value
+               |(statusCode, value) -> failwithf "Could not get vnet integration. Status code is %A. Content: %A" statusCode value
 
     let add rg siteName vnetRg vnetName subnetName =
         let subnetId = buildSubnetId vnetRg vnetName subnetName
