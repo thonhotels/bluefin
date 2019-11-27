@@ -27,8 +27,8 @@ module Subnet =
         let result = show rg name vnetName
 
         let op = match result.ExitCode with
-                    | 0 -> update rg name vnetName addressPrefixes
-                    | _ -> create rg name vnetName addressPrefixes
+                    | 0 -> "update"
+                    | _ -> "create"
         createOrUpdate op rg name vnetName addressPrefixes "Microsoft.Web/serverfarms"
 
     let resourceId rg vnetName name =
