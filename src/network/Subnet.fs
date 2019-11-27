@@ -13,10 +13,11 @@ module Subnet =
         azArr ["network";"vnet";"subnet";"create";"-g";rg;"-n";name;"--vnet-name";vnetName;"--address-prefixes";addressPrefixes]
 
     let createOrUpdate rg name vnetName addressPrefixes =
-        let subnet = show rg name vnetName
-        match subnet with
-        | Some _ -> update rg name vnetName addressPrefixes
-        | None -> create rg name vnetName addressPrefixes
+        let result = show rg name vnetName
+
+        match result.ExitCode with
+        | 0 -> update rg name vnetName addressPrefixes
+        | _ -> create rg name vnetName addressPrefixes
  
     let resourceId rg vnetName name =
         Common.resourceId rg "virtualNetworks" vnetName + (sprintf "/subnets/%s" name)
