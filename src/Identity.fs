@@ -14,12 +14,14 @@ module Identity =
         key: string
         value: string
     }
+
     type Properties = {
         clientId: string
         clientSecretUrl: string
         principalId: string
         tenantId: string
     }
+
     type ManagedIdentity = {
         id: string
         location: string
