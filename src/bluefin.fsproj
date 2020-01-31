@@ -53,6 +53,7 @@
     <Compile Include="ContainerRegistry.fs" />
     <Compile Include="AppConfig.fs" />
     <Compile Include="Docker.fs" />
+    <Compile Include="monitor\AlertRule.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
