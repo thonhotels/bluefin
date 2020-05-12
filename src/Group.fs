@@ -20,7 +20,7 @@ module Group =
         JsonConvert.DeserializeObject<seq<ResourceGroup>> r
 
     let applyArmTemplate rg templatePath templateFile parameterFile = 
-        azWorkingDirArr ["group";"deployment";"create";"-g";rg;"--template-file";templateFile;"--parameters";parameterFile] templatePath
+        azWorkingDirArr ["deployment";"group";"create";"-g";rg;"--template-file";templateFile;"--parameters";parameterFile] templatePath
             |> ignore
 
     let rgId name =
