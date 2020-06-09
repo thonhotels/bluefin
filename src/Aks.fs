@@ -16,6 +16,7 @@ module Aks =
             nodeCount: int
             nodeVmSize: string
             enableAddons: string
+            loadBalancerSku: string
             vnetSubnetId: string
             maxPods: string
             workspaceResourceId: string
@@ -33,6 +34,7 @@ module Aks =
                 | _ -> sprintf " %s %s" propName propValue
 
     let createK8sCluster cluster = 
+        let loadBalancerSku = optional "--load-balancer-sku" cluster.loadBalancerSku
         let vnetSubnetId = optional "--vnet-subnet-id" cluster.vnetSubnetId
         let maxPods = optional "--max-pods" cluster.maxPods
         let workspaceResourceId = optional "--workspace-resource-id" cluster.workspaceResourceId
@@ -45,7 +47,7 @@ module Aks =
 
         az (
             sprintf 
-                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys%s%s%s%s%s%s%s%s%s" 
+                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys%s%s%s%s%s%s%s%s%s%s" 
                 cluster.resourceGroup
                 cluster.clusterName
                 cluster.servicePrincipalId
@@ -54,6 +56,7 @@ module Aks =
                 cluster.nodeCount
                 cluster.nodeVmSize
                 cluster.enableAddons
+                loadBalancerSku
                 vnetSubnetId
                 maxPods
                 workspaceResourceId
