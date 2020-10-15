@@ -4,7 +4,6 @@
     <AssemblyName>Thon.Hotels.Bluefin</AssemblyName>
     <Authors>Thon Hotels</Authors>
     <Copyright>Copyright © 2019</Copyright>
-    <LangVersion>Latest</LangVersion>
     <RootNamespace>Bluefin</RootNamespace>
     <PackageId>Bluefin</PackageId>
   </PropertyGroup>
@@ -56,7 +55,7 @@
     <Compile Include="monitor\AlertRule.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fake.Core.Process" Version="5.12.6" />
+    <PackageReference Include="Fake.Core.Process" Version="5.20.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 </Project>
