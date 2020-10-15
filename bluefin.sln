@@ -9,7 +9,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "unitTests", "tests\unitTest
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{57CEA571-0858-4B11-A9D8-DD8AB2E58117}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "manuelTest", "tests\manualTest\manuelTest.fsproj", "{527C6CF4-811A-4674-BF71-D2171EE6C7E2}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "manualTest", "tests\manualTest\manuelTest.fsproj", "{527C6CF4-811A-4674-BF71-D2171EE6C7E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

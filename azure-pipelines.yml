@@ -1,11 +1,5 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 pool:
-  vmImage: "Ubuntu 16.04"
-
+  vmImage: "ubuntu-18.04"
 steps:
   - task: isaacabraham.fsharp-helpers-extension.a2dadf20-1a83-4220-a4ee-b52f6c77f3cf.FAKE5@1
     displayName: "Run FAKE script"
