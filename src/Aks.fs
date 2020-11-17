@@ -26,47 +26,45 @@ module Aks =
             dockerBridgeCIDR: string
             networkPlugin: string
             dnsNamePrefix: string
+            loadBalancerOutboundIP: string
         }
 
-    let optional propName propValue =
-        match propValue with
-                | "" -> ""
-                | _ -> sprintf " %s %s" propName propValue
-
     let createK8sCluster cluster = 
-        let loadBalancerSku = optional "--load-balancer-sku" cluster.loadBalancerSku
-        let vnetSubnetId = optional "--vnet-subnet-id" cluster.vnetSubnetId
-        let maxPods = optional "--max-pods" cluster.maxPods
-        let workspaceResourceId = optional "--workspace-resource-id" cluster.workspaceResourceId
-        let nodepoolName = optional "--nodepool-name" cluster.nodepoolName
-        let dnsServiceIP = optional "--dns-service-ip" cluster.dnsServiceIP
-        let serviceCIDR = optional "--service-cidr" cluster.serviceCIDR
-        let dockerBridgeCIDR = optional "--docker-bridge-address" cluster.dockerBridgeCIDR
-        let networkPlugin = optional "--network-plugin" cluster.networkPlugin
-        let dnsNamePrefix = optional "--dns-name-prefix" cluster.dnsNamePrefix
+        let baseCmd = [ 
+            "aks"; "create"
+            "-g"; cluster.resourceGroup
+            "-n"; cluster.clusterName
+            "--service-principal"; cluster.servicePrincipalId
+            "--client-secret"; cluster.servicePrincipalSecret
+            "--kubernetes-version"; cluster.k8sVersion
+            "--node-count"; cluster.nodeCount.ToString()
+            "--node-vm-size"; cluster.nodeVmSize
+            "--enable-addons"; cluster.enableAddons
+            "--generate-ssh-keys"
+        ]
 
-        az (
-            sprintf 
-                "aks create -g %s -n %s --service-principal %s --client-secret %s --kubernetes-version %s --node-count %i --node-vm-size %s --enable-addons %s --generate-ssh-keys%s%s%s%s%s%s%s%s%s%s" 
-                cluster.resourceGroup
-                cluster.clusterName
-                cluster.servicePrincipalId
-                cluster.servicePrincipalSecret
-                cluster.k8sVersion
-                cluster.nodeCount
-                cluster.nodeVmSize
-                cluster.enableAddons
-                loadBalancerSku
-                vnetSubnetId
-                maxPods
-                workspaceResourceId
-                nodepoolName
-                dnsServiceIP
-                serviceCIDR
-                dockerBridgeCIDR
-                networkPlugin
-                dnsNamePrefix
-        ) |> ignore
+        let optional propName propValue =
+            match propValue with
+                    | "" -> []
+                    | _ -> [propName;propValue] 
+
+        seq {
+            yield! baseCmd
+            yield! optional "--load-balancer-sku" cluster.loadBalancerSku
+            yield! optional "--vnet-subnet-id" cluster.vnetSubnetId
+            yield! optional "--max-pods" cluster.maxPods
+            yield! optional "--workspace-resource-id" cluster.workspaceResourceId
+            yield! optional "--nodepool-name" cluster.nodepoolName
+            yield! optional "--dns-service-ip" cluster.dnsServiceIP
+            yield! optional "--service-cidr" cluster.serviceCIDR
+            yield! optional "--docker-bridge-address" cluster.dockerBridgeCIDR
+            yield! optional "--network-plugin" cluster.networkPlugin
+            yield! optional "--dns-name-prefix" cluster.dnsNamePrefix
+            yield! optional "--load-balancer-outbound-ips" cluster.loadBalancerOutboundIP
+        } 
+        |> Seq.toArray
+        |> azArr
+        |> ignore
 
     let getCredentials resourceGroup clusterName =
         azArr [|"aks";"get-credentials";"-g";resourceGroup;"-n";clusterName;"--overwrite-existing"|] |> ignore
