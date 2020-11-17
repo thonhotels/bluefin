@@ -5,8 +5,18 @@ open Bluefin.Core
 open Bluefin.Servicebus.Common
 
 module Queue =
+    let getConnectionStringEx rg namespaceName queueName name = 
+        azArr [
+                "servicebus";"queue";"authorization-rule"; "keys"; "list" 
+                "-g"; rg 
+                "--namespace-name"; namespaceName
+                "--queue-name"; queueName
+                "--name"; name
+                "--query"; "primaryConnectionString"
+            ]
+
     let getConnectionString rg namespaceName queueName = 
-        az (sprintf "servicebus queue authorization-rule keys list -g %s --namespace-name %s --queue-name %s --name read-write --query primaryConnectionString" rg namespaceName queueName)
+        getConnectionStringEx rg namespaceName queueName "read-write"
 
     type QueueSettings = {
         namespaceName: string

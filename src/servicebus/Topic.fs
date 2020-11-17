@@ -5,8 +5,18 @@ open Bluefin.Core
 open Common
 
 module Topic =
-    let getConnectionString rg namespaceName topicName = 
-        az (sprintf "servicebus topic authorization-rule keys list -g %s --namespace-name %s --topic-name %s --name read-write --query primaryConnectionString" rg namespaceName topicName)
+    let getConnectionStringEx rg namespaceName topicName name = 
+        azArr [
+                "servicebus";"topic";"authorization-rule"; "keys"; "list" 
+                "-g"; rg 
+                "--namespace-name"; namespaceName
+                "--topic-name"; topicName
+                "--name"; name
+                "--query"; "primaryConnectionString"
+            ]
+
+    let getConnectionString rg namespaceName topicName =
+        getConnectionStringEx  rg namespaceName topicName "read-write"
 
     type TopicSettings = {
         namespaceName: string
