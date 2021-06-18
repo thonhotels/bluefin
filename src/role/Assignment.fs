@@ -19,7 +19,7 @@ module Assignment =
     }
 
     let private get assigneeObjectId role scope =
-        let result = azResult (sprintf "role assignment list --assignee %s --role %s --scope %s" assigneeObjectId role scope)
+        let result = azResult (sprintf "role assignment list --assignee %s --role \"%s\" --scope %s" assigneeObjectId role scope)
         
         match result.Result.Error, result.ExitCode, result.Result.Output with
             | (_, 0, x) when (x = "[]") ->
