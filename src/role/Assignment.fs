@@ -29,6 +29,9 @@ module Assignment =
             | error, exitCode, _ ->
                 failwithf "Failed to list role assignement. ExitCode %d. Message: %s" exitCode error    
 
+    let createAssignmentByAssigneeObjectId assigneeObjectId role scope principalType =
+        azArr [|"role";"assignment";"create";"--role";role;"--scope"; scope;"--assignee-object-id";assigneeObjectId;"--assignee-principal-type";principalType|]
+
     type AssignRoleProperties = {
         roleDefinitionId: string
         principalId: string
