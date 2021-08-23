@@ -27,6 +27,8 @@ module Aks =
             networkPlugin: string
             dnsNamePrefix: string
             loadBalancerOutboundIP: string
+            enableManagedIdentity: bool
+            assignIdentity: string
         }
         
     let showClientId resourceGroup clusterName =
@@ -49,7 +51,12 @@ module Aks =
         let optional propName propValue =
             match propValue with
                     | "" -> []
-                    | _ -> [propName;propValue] 
+                    | _ -> [propName;propValue]
+        
+        let optionalFlag propName propValue =
+            match propValue with
+                    | true -> [propName]
+                    | _ -> []
 
         seq {
             yield! baseCmd
@@ -64,6 +71,8 @@ module Aks =
             yield! optional "--network-plugin" cluster.networkPlugin
             yield! optional "--dns-name-prefix" cluster.dnsNamePrefix
             yield! optional "--load-balancer-outbound-ips" cluster.loadBalancerOutboundIP
+            yield! optionalFlag "--enable-managed-identity" cluster.enableManagedIdentity
+            yield! optional "--assign-identity" cluster.assignIdentity
         } 
         |> Seq.toArray
         |> azArr
