@@ -39,8 +39,6 @@ module Aks =
             "aks"; "create"
             "-g"; cluster.resourceGroup
             "-n"; cluster.clusterName
-            "--service-principal"; cluster.servicePrincipalId
-            "--client-secret"; cluster.servicePrincipalSecret
             "--kubernetes-version"; cluster.k8sVersion
             "--node-count"; cluster.nodeCount.ToString()
             "--node-vm-size"; cluster.nodeVmSize
@@ -60,6 +58,8 @@ module Aks =
 
         seq {
             yield! baseCmd
+            yield! optional "--service-principal" cluster.servicePrincipalId
+            yield! optional "--client-secret" cluster.servicePrincipalSecret
             yield! optional "--load-balancer-sku" cluster.loadBalancerSku
             yield! optional "--vnet-subnet-id" cluster.vnetSubnetId
             yield! optional "--max-pods" cluster.maxPods
