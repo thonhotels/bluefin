@@ -29,6 +29,7 @@ module Aks =
             loadBalancerOutboundIP: string
             enableManagedIdentity: bool
             assignIdentity: string
+            attachAcr: string
         }
         
     let showClientId resourceGroup clusterName =
@@ -73,6 +74,7 @@ module Aks =
             yield! optional "--load-balancer-outbound-ips" cluster.loadBalancerOutboundIP
             yield! optionalFlag "--enable-managed-identity" cluster.enableManagedIdentity
             yield! optional "--assign-identity" cluster.assignIdentity
+            yield! optional "--attach-acr" cluster.attachAcr
         } 
         |> Seq.toArray
         |> azArr
