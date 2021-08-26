@@ -29,6 +29,8 @@ module Common =
     let CosmosBackupOperator = roleDefinition "db7b14f2-5adf-42da-9f96-f2ee17bab5cb"
     let CosmosDBAccountContributor = roleDefinition "5bd9cd88-fe45-4216-938b-f97437e15450"
     let KeyVaultContributor = roleDefinition "f25e0fa2-a7c8-4377-a976-54943a77a395"
+    let KeyVaultSecretsOfficer = "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
+    let KeyVaultSecretsUser = "4633458b-17de-408a-b874-0445c86b69e6"
     let ManagedIdentityContributor = roleDefinition "e40ec5ca-96e0-45a2-b4ff-59039f2c2b59"
     let ManagedIdentityOperator = roleDefinition "f1a07417-d97a-45cb-824c-7a7467783830"
     let MonitoringContributor = roleDefinition "749f88d5-cbae-40b8-bcfc-e573ddc772fa"
@@ -50,4 +52,5 @@ module Common =
     let StorageQueueDataMessageProcessor = roleDefinition "8a0f0c08-91a1-4084-bc3d-661d67233fed"
     let StorageQueueDataMessageSender = roleDefinition "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
     let StorageQueueDataReader = roleDefinition "19e7f393-937e-4f77-808e-94535e297925"
+    let VirtualMachineContributor = roleDefinition "9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
  
