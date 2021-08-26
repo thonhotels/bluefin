@@ -37,7 +37,10 @@ module Aks =
 
     let showKubeletIdentityClientId resourceGroup clusterName =
         az (sprintf "aks show -g %s -n %s --query identityProfile.kubeletidentity.clientId -o tsv" resourceGroup clusterName)
-        
+
+    let showKubeletIdentityObjectId resourceGroup clusterName =
+        az (sprintf "aks show -g %s -n %s --query identityProfile.kubeletidentity.objectId -o tsv" resourceGroup clusterName)
+
     let createK8sCluster cluster = 
         let baseCmd = [ 
             "aks"; "create"
