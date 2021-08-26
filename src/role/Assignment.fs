@@ -19,15 +19,23 @@ module Assignment =
     }
 
     let private get assigneeObjectId role scope =
-        let result = azResult (sprintf "role assignment list --assignee %s --role %s --scope %s" assigneeObjectId role scope)
-        
-        match result.Result.Error, result.ExitCode, result.Result.Output with
-            | (_, 0, x) when (x = "[]") ->
-                None
-            | _, 0, x ->
-                Some (Seq.head <| JsonConvert.DeserializeObject<RoleAssignment[]> x)
-            | error, exitCode, _ ->
-                failwithf "Failed to list role assignement. ExitCode %d. Message: %s" exitCode error    
+
+        let rec attemptListRoleAssignments n errorMessage =
+            if n < 42 then 
+                debugfn "Trying to list role assignments for assignee with objectId '%s'. %d attempt" assigneeObjectId n
+                let result = azResult (sprintf "role assignment list --assignee %s --role %s --scope %s" assigneeObjectId role scope)
+                match result.Result.Error, result.ExitCode, result.Result.Output with
+                    | (_, 0, x) when (x = "[]") ->
+                        None
+                    | _, 0, x ->
+                        Some (Seq.head <| JsonConvert.DeserializeObject<RoleAssignment[]> x)
+                    | error, exitCode, _ ->
+                        Threading.Thread.Sleep 5000
+                        attemptListRoleAssignments (n + 1) (sprintf "ExitCode: %d. Message: %s" exitCode error)
+            else
+                failwithf "Failed to list role assignment. Message: %s" errorMessage
+
+        attemptListRoleAssignments 1 ""
 
     let createAssignmentByAssigneeObjectId assigneeObjectId role scope principalType =
         azArr [|"role";"assignment";"create";"--role";role;"--scope"; scope;"--assignee-object-id";assigneeObjectId;"--assignee-principal-type";principalType|]
