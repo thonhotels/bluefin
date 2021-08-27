@@ -4,9 +4,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- edit this value to change the current major.minor version -->
-    <VersionPrefix>0.1</VersionPrefix>
+    <VersionPrefix>0.2</VersionPrefix>
     <BUILDNUMBER>1</BUILDNUMBER>
-   </PropertyGroup>
+  </PropertyGroup>
 
   <Choose>
     <When Condition=" '$(Prerelease)' != '' ">
