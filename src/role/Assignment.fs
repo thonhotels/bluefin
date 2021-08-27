@@ -81,6 +81,7 @@ module Assignment =
 
     let create assigneeObjectId role (scope:string) =
         let decodeBadRequest value =
+            debugfn "Bad request: %A" value
             let response = JsonConvert.DeserializeObject<BadRequestResponse> value
             match response with
             | v when v.error.code = "PrincipalNotFound" -> Code PrincipalNotFound
@@ -100,15 +101,15 @@ module Assignment =
         match get assigneeObjectId role scope with
         | Some roleAssignment -> RA roleAssignment
         | _ ->
-            let s = scope.Replace(sprintf "/subscription/%s/" subscriptionId,"") 
+            let s = scope.Replace(sprintf "/subscriptions/%s/" subscriptionId,"")
             let url = 
                 sprintf "%s/providers/Microsoft.Authorization/roleAssignments/%s?api-version=2018-01-01-preview" s (Guid.NewGuid().ToString())
 
             let accessTokenResult = getAccessToken "https://management.azure.com"
-
+            let roleDefId = sprintf "%s/providers/Microsoft.Authorization/roleDefinitions/%s" scope role
             let result = put Management url (Some accessTokenResult.accessToken) 
                             (Some (box {properties = {
-                                roleDefinitionId = role
+                                roleDefinitionId = roleDefId
                                 principalId = assigneeObjectId
                             }
                             }))
@@ -134,4 +135,3 @@ module Assignment =
             else
                 failwithf "Service principal with objectId = %s not found after %d attempts" objId n
         attemptCall 1
-    
