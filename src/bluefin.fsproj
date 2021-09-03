@@ -25,6 +25,7 @@
     <Compile Include="network/VNet.fs" />
     <Compile Include="network/Subnet.fs" />
     <Compile Include="network/PublicIp.fs" />
+    <Compile Include="role/Id.fs" />
     <Compile Include="role/Common.fs" />
     <Compile Include="role/Assignment.fs" />
     <Compile Include="webapp/Config.fs" />
