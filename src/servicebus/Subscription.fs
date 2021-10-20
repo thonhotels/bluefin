@@ -33,7 +33,7 @@ module Subscription =
         lockDuration: TimeSpan
                             // lock duration for the subscription. The default value is 1 minute.        
         maxDeliveryCount: int
-                            // Number of maximum deliveries.
+                            // Number of maximum deliveries. Default value is 3.
         requiresSession: bool
                             // Value indicating if a subscription supports the concept of sessions.                                                   
     }
@@ -48,7 +48,7 @@ module Subscription =
         forwardDeadLetteredMessagesTo = None
         forwardTo = None
         lockDuration = TimeSpan (0, 1, 0)     
-        maxDeliveryCount = 10
+        maxDeliveryCount = 3
         requiresSession = false
     }
 
