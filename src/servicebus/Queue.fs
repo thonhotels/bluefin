@@ -46,7 +46,7 @@ module Queue =
                                                         // 5 minutes; the default value is 1 minute.
         maxDeliveryCount: int                           // The maximum delivery count. A message is
                                                         // automatically deadlettered after this number of
-                                                        // deliveries. default value is 10
+                                                        // deliveries. default value is 3
         maxSize: MaxSize                                // The maximum size of queue in megabytes, which is
                                                         // the size of memory allocated for the queue.
                                                         // Default is 1024
@@ -74,7 +74,7 @@ module Queue =
         forwardDeadLetteredMessagesTo = ""
         forwardTo = ""
         lockDuration = minutes 1
-        maxDeliveryCount = 10
+        maxDeliveryCount = 3
         maxSize = MB_1024
         status = Active
     }
