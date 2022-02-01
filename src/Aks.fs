@@ -27,6 +27,7 @@ module Aks =
             networkPlugin: string
             dnsNamePrefix: string
             loadBalancerOutboundIP: string
+            loadBalancerOutboundAllocatedPorts: int
             enableManagedIdentity: bool
             assignIdentity: string
             attachAcr: string
@@ -78,6 +79,7 @@ module Aks =
             yield! optional "--network-plugin" cluster.networkPlugin
             yield! optional "--dns-name-prefix" cluster.dnsNamePrefix
             yield! optional "--load-balancer-outbound-ips" cluster.loadBalancerOutboundIP
+            yield! optional "--load-balancer-outbound-ports" (cluster.loadBalancerOutboundAllocatedPorts.ToString())
             yield! optionalFlag "--enable-managed-identity" cluster.enableManagedIdentity
             yield! optional "--assign-identity" cluster.assignIdentity
             yield! optional "--attach-acr" cluster.attachAcr
