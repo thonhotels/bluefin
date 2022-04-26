@@ -31,6 +31,7 @@ module Aks =
             enableManagedIdentity: bool
             assignIdentity: string
             attachAcr: string
+            uptimeSla: bool
         }
         
     let showClientId resourceGroup clusterName =
@@ -83,6 +84,7 @@ module Aks =
             yield! optionalFlag "--enable-managed-identity" cluster.enableManagedIdentity
             yield! optional "--assign-identity" cluster.assignIdentity
             yield! optional "--attach-acr" cluster.attachAcr
+            yield! optionalFlag "--uptime-sla" cluster.uptimeSla
         } 
         |> Seq.toArray
         |> azArr
