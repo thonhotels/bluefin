@@ -1,6 +1,18 @@
 pool:
   vmImage: "ubuntu-20.04"
 steps:
+  # Needed for FAKE
+  - task: UseDotNet@2
+    displayName: 'Install .NET 2.1'
+    inputs:
+      packageType: 'sdk'
+      version: '2.1.x'
+      includePreviewVersions: false
+  - task: UseDotNet@2
+    displayName: "Use .NET sdk from global.json"
+    inputs:
+      packageType: sdk
+      useGlobalJson: true
   - task: isaacabraham.fsharp-helpers-extension.a2dadf20-1a83-4220-a4ee-b52f6c77f3cf.FAKE5@1
     displayName: "Run FAKE script"
     inputs:
